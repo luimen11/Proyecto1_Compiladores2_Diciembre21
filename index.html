@@ -1,0 +1,68 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">        
+</head>
+
+<title>
+    PRUEBAS
+</title>
+
+
+<body>
+    <table width="100%">
+
+        <tr>
+            <td align="center">
+                <h1 > PRUEBAS COMPI</h1>
+            </td>
+        </tr>
+        <tr>
+            <td align="center">
+                <!-- AREA DE TEXTO PARA CONSULTA -->
+                <div id="ide2">
+                    <h3 > ENTRADA </h3>
+                    <textarea id="txtEntrada" class="txtarea" style="resize:none"  name="txtXpath" rows="20" cols="100"></textarea>
+                </div> 
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center">
+                <!-- AREA DE TEXTO PARA RESULTADO -->
+                <div id="ide3">  
+                    <br><br>                 
+                    <input type="button" value="Ejecutar"  onclick="javascript:analizar();" />
+                    <br><br>
+                </div>  
+            </td>
+        </tr>
+
+        <tr>
+            <td align="center">  
+                <!-- AREA DE TEXTO PARA RESULTADO -->
+                <div id="ide3">
+                    <h3> SALIDA </h3>
+                    <textarea id="txtSalida"  name="console"  style="resize:none"  rows="20" cols="100"></textarea>
+                </div>  
+            </td>
+        </tr>
+        
+    </table>    
+   
+
+    <script src="calculator.js"></script>
+
+    <script>
+        function analizar() {
+
+            var toParse = document.getElementById("txtEntrada").value;
+            var result = calculator.parse(toParse);
+
+            document.getElementById('txtSalida').innerHTML = result;
+            
+            }
+    </script>
+</body>
+
+</html>
