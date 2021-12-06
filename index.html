@@ -52,12 +52,13 @@
    
 
     <script src="calculator.js"></script>
+    <script src="gramaticaPreliminar.js"></script>
 
     <script>
         function analizar() {
 
             var toParse = document.getElementById("txtEntrada").value;
-            var result = calculator.parse(toParse);
+            var result = gramaticaPreliminar.parse(toParse);
 
             document.getElementById('txtSalida').innerHTML = result;
             
