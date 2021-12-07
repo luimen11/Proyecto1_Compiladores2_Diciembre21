@@ -58,12 +58,6 @@
 "["                 return '[';
 "]"                 return ']';
 
-"+="                return '+=';
-"-="                return '-=';
-"*="                return '*=';
-"/="                return '/=';
-"%="                return '%=';
-
 "%"                 return '%';
 "++"                return '++';
 "--"                return '--';
@@ -87,14 +81,15 @@
 "!"                 return '!';
 
 "="                 return '=';
-
 "?"                 return '?';
+
+
 
 \"[^\"]*\"                 { yytext = yytext.substr(1,yyleng-2); return 'CADENA'; }
 \'[^\']*\'                 { yytext = yytext.substr(1,yyleng-2); return 'CARACTER'; }
 
 
-[0-9]+("."[0-9]+)?\b        return 'DECIMAL';
+[0-9]+("."[0-9]+)\b        return 'DECIMAL';
 [0-9]+\b                    return 'ENTERO';
 "false"|"true"              return 'BOOLEANO';
 ([a-zA-Z])[a-zA-Z0-9_]*     return 'ID';
@@ -110,12 +105,11 @@
 %}
 
 
-%right '+=' '-=' '*=' '/=' '%=' 
 %rigth '?'
+%left '&&' '||' 
+%left '<' '<=' '>' '>=' '==' '!='
 %left '+' '-' '&'
 %left '*' '/' '%'
-%left '<' '<=' '>' '>=' '==' '!='
-%left '&&' '||' 
 %left UMENOS
 %right '!'
 %right '++' '--'
@@ -143,13 +137,23 @@ instruccion
 
 declaracion : tipo ID '=' expresion ';'
             | tipo lista_declaracion ';'
+            | RSTRUCT ID '{' lista_atributos'}' ';'
 ;
+
+lista_atributos : lista_atributos ',' atributo
+                | atributo
+                ;
+
+atributo : tipo ID
+         | ID ID
+         ;
 
 lista_declaracion : lista_declaracion ',' ID
                   | ID
 ;
 
 asignacion : ID '=' expresion ';'
+           | ID ID '=' ID '(' lista_parametros ')' ';'
            ;
 
 tipo        : tipo_primitivo
@@ -230,7 +234,8 @@ expresion : '-' expresion %prec UMENOS
           | RTRUE				
           | RFALSE	     		
           | CADENA	 
-          | CARACTER  
+          | CARACTER
+          | RNULL  
           
           | expresion '++'
           | expresion '--'       
