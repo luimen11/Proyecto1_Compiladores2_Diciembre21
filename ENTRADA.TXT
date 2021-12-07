@@ -22,11 +22,11 @@ if(x == 8){
 }
 
 if(x == 8){
-    var1 = (x + 8)::Int64;
+    int var1 = (x + 8);
     println(sqrt(var1));
 }
 elseif(x < 8){
-    var1 = (x/3);
+    int var1 = (x/3);
 }
 else
     println("Error");
