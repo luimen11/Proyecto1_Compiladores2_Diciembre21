@@ -67,11 +67,12 @@ String str = "Saludo";
 
 
 if(x == 8){
-    int var1 = (x + 8);
+    var1 = (x + 8);
     println(sqrt(var1));
 }
-elseif(x < 8){
-    int var1 = (x/3);
+else if(x < 8){
+    var1 = (x/3);
 }
-else
+else{
     println("Error");
+}
