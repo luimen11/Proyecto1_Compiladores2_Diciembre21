@@ -1,5 +1,5 @@
-# Proyecto 1
+## Proyecto 1
 
-# Compiladores 2
+### Compiladores 2
 
-# Vacaciones Diciembre 2021.
+### Vacaciones Diciembre 2021.
