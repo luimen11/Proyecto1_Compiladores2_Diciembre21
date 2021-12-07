@@ -16,8 +16,8 @@
 "true"              return 'RTRUE';
 "false"             return 'RFALSE';
 "struct"            return 'RSTRUCT';
-"print"             return 'RPRINT'
-"println"           return 'RPRINTLN'
+"print"             return 'RPRINT';
+"println"           return 'RPRINTLN';
 "pow"               return 'RPOW';
 "sin"               return 'RSIN';
 "cos"               return 'RCOS';
@@ -30,7 +30,6 @@
 "function"          return 'RFUNCTION';
 "return"            return 'RRETURN';
 "if"                return 'RIF';
-"elseif"            return 'RELSEIF';
 "else"              return 'RELSE';
 "switch"            return 'RSWITCH';
 "case"              return 'RCASE';
@@ -141,7 +140,7 @@ instruccion
     : declaracion
     | asignacion
     | impresion
-    | llamada ';'
+    | llamada ';'    
     | cond_if
 ;
 
@@ -188,15 +187,16 @@ nativas          : tipo '.' RPARSE '(' expresion ')'
                  | RTYPEOF '(' expresion ')'                 
 ;                 
                  
-cond_if         : RIF '(' expresion ')' bloque_instrucciones  cond_else
+cond_if         : RIF '(' expresion ')' bloque_instrucciones                                 
+                | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                 
+                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones
 ;
-
-cond_else       : RELSE bloque_instrucciones
-;
-
 
 bloque_instrucciones   : '{' instrucciones '}'
-                       |  instruccion                 
+                        | declaracion
+                        | asignacion
+                        | impresion
+                        | llamada ';'
                        ; 
 
 tipo_func_arit       : RPOW
