@@ -13,6 +13,7 @@
 "double"            return 'RDOUBLE';
 "String"            return 'RSTRING';
 "boolean"           return 'RBOOLEAN';
+"char"              return 'RCHAR'
 "true"              return 'RTRUE';
 "false"             return 'RFALSE';
 "struct"            return 'RSTRUCT';
@@ -112,13 +113,11 @@
 
 %right '+=' '-=' '*=' '/=' '%=' 
 %rigth '?'
-%left '||'
-%left '&&'
-%left '==' '!='
-%left '<' '<=' '>' '>='
 %left '+' '-'
 %left '*' '/'
 %left '%' '**'
+%left '<' '<=' '>' '>=' '==' '!='
+%left '&&' '||' 
 %left UMENOS
 %right '!'
 %right '++' '--'
@@ -162,6 +161,7 @@ tipo_primitivo :    RINT
                |    RDOUBLE
                |    RSTRING
                |    RBOOLEAN
+               |    RCHAR
 ;                    
 
 impresion       : RPRINTLN '(' lista_impresion ')' ';'
@@ -214,18 +214,27 @@ expresion : '-' expresion %prec UMENOS
           | expresion '-' expresion		  
           | expresion '*' expresion		  
           | expresion '/' expresion	      
+          | expresion '%' expresion	      
           | expresion '<' expresion		  
           | expresion '>' expresion		  
           | expresion '<=' expresion	  
           | expresion '>=' expresion	  
           | expresion '==' expresion	  
-          | expresion '!=' expresion	  
+          | expresion '!=' expresion
+          | expresion '&&' expresion
+          | expresion '||' expresion 
+          | '!' expresion	   	  
+          
           | ID                           
           | ENTERO				    
           | DECIMAL				    
           | RTRUE				
           | RFALSE	     		
-          | CADENA	           
+          | CADENA	 
+          | CARACTER  
+          
+          | expresion '++'
+          | expresion '--'       
           | llamada 
           | nativas
           | func_arit
