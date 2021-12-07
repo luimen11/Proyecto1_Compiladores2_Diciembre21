@@ -6,48 +6,63 @@
 
 <title>
     Proyecto1
+    
 </title>
+<link rel="stylesheet" href="./resources/css/codemirror.css">
+<link rel="stylesheet" href="./resources/css/isotope.css">
+<link rel="stylesheet" href="./resources/css/bootstrap.css">
+<link rel="stylesheet" href="./resources/css/main.css">
+<link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 
 
 <body>
     <table width="100%">
 
         <tr >
-            <td align="center" colspan="2">
-                <h1 > QUETZAL</h1>                
+            <td align="center" colspan="3" >
+                <h3 > QUETZAL</h3>                
             </td>
         </tr>
 
         <tr>
-            <td align="center" colspan="2">
-                <h3> Compiladores 2 - Diciembre 2021</h3>                
+            <td align="center" colspan="3" >
+                <h5> Compiladores 2 - Diciembre 2021</h5>   
+                <br>             
             </td>
         </tr>
         
-        <tr>
-            <td align="center">
-                <h4> ENTRADA </h4>
+        <tr >
+            <td >
+                <h6> ENTRADA </h6>
                 <!-- AREA DE TEXTO PARA CONSULTA -->
-                <div id="ide2" >                    
-                    <textarea id="txtEntrada" class="txtarea" style="resize:none; overflow-y: scroll; overflow-x: scroll;"  name="txtEntrada" rows="30" cols="80"></textarea>
+                <div id="divEntrada" >                    
+                    <textarea id="txtEntrada" name="txtEntrada"   ></textarea>
                 </div>                 
             </td>
 
-            <td align="center" >  
+            <td >  
                 <!-- AREA DE TEXTO PARA RESULTADO -->
-                <h4> SALIDA </h4>
+                <h6> INTEPRETE </h6>
                 <div id="ide3">                    
-                    <textarea id="txtSalida"  name="console"  style="resize:none; overflow-y: scroll; overflow-x: scroll;"   rows="30" cols="80"></textarea>
+                    <textarea id="txtSalida"  name="txtSalida"  style="resize:none; overflow-y: scroll; overflow-x: scroll;" rows="30" cols="80" ></textarea>
+                </div>  
+            </td>
+
+            <td >  
+                <!-- AREA DE TEXTO PARA RESULTADO -->
+                <h6> TRADUCCION </h6>
+                <div id="ide3">                    
+                    <textarea id="txtTraduccion"  name="txtTraduccion"  style="resize:none; overflow-y: scroll; overflow-x: scroll;" rows="30" cols="80" ></textarea>
                 </div>  
             </td>
         </tr>
 
         <tr>
-            <td align="center" colspan="2">
+            <td align="center" colspan="3">
                 <!-- AREA DE TEXTO PARA RESULTADO -->
                 <div id="ide3">  
                     <br>              
-                    <input type="button" value="Ejecutar"  onclick="javascript:analizar();" />
+                    <input type="button" value="Interpretar"  onclick="javascript:analizar();" />
                     <input type="button" value="Traducir"  />
                     
                     <br>
@@ -56,7 +71,7 @@
         </tr>
 
         <tr>
-            <td align="center" colspan="2">  
+            <td align="center" colspan="3">  
                 <!-- AREA DE TEXTO PARA RESULTADO -->                
                 <div id="ide3">                    
                     <textarea id="txtSalida"  name="console" style="resize:none; overflow-y: scroll; "   rows="10" cols="140"></textarea>
@@ -68,7 +83,7 @@
 
 
         <tr>
-            <td align="center" colspan="2">                 
+            <td align="center" colspan="3">                 
                 <h4> Tabla de simbolos </h4>
                 <!-- AREA DE TEXTO PARA RESULTADO -->                
                 <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
@@ -80,7 +95,7 @@
         </tr>
 
         <tr>
-            <td align="center" colspan="2">                 
+            <td align="center" colspan="3">                 
                 <h4> Reporte de Errores</h4>
                 <!-- AREA DE TEXTO PARA RESULTADO -->                
                 <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
@@ -92,7 +107,7 @@
         </tr>
 
         <tr>
-            <td align="center" colspan="2">                 
+            <td align="center" colspan="3">                 
                 <h4> Reporte gramatical</h4>
                 <!-- AREA DE TEXTO PARA RESULTADO -->                
                 <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
@@ -108,18 +123,44 @@
    
 
     <script src="calculator.js"></script>
-    <script src="gramaticaPreliminar.js"></script>
+    <script src="gramaticaPreliminar.js"></script>    
+    <script src="./resources/js/codemirror.js"></script>
+    <script src="./resources/js/Jquery.js"></script>
+    <script src="./resources/js/bootstrap.js"></script>
+    <script src="./resources/mode/javascript/javascript.js"></script>
+    <script src="./resources/mode/pascal/pascal.js"></script>
+    <script src="./resources/js/main.js"></script>
 
-    <script>
-        function analizar() {
+    
+<script>
+    //var myCodeMirror = CodeMirror.fromTextArea(txtEntrada, {lineNumbers: true});
 
-            var toParse = document.getElementById("txtEntrada").value;
-            var result = gramaticaPreliminar.parse(toParse);
+    var entrada = CodeMirror.fromTextArea(document.getElementById("txtEntrada"), {
+        lineNumbers: true,
+        mode: "javascript"
+        
+    });    
+    entrada.setSize(450, 500);
 
-            document.getElementById('txtSalida').innerHTML = result;
-            
-            }
-    </script>
+    var salida = CodeMirror.fromTextArea(document.getElementById("txtSalida"), {        
+        mode: "javascript"        
+    });    
+    salida.setSize(450, 500);
+    
+
+    var txttraduc = CodeMirror.fromTextArea(document.getElementById("txtTraduccion"), {        
+        mode: "javascript"        
+    });    
+    txttraduc.setSize(450, 500);
+    
+    function analizar() {
+        
+        var result = gramaticaPreliminar.parse(entrada.getDoc().getValue());    
+        salida.getDoc().setValue(String(result));
+    }
+
+
+</script>
 </body>
 
 </html>
