@@ -65,12 +65,10 @@
 "%="                return '%=';
 
 "%"                 return '%';
-"**"                return '**';
 "++"                return '++';
 "--"                return '--';
 "+"                 return '+';
-"&"                return '&';
-"^"                return '^';
+"^"                 return '^';
 
 "-"                 return '-';
 "*"                 return '*';
@@ -84,6 +82,7 @@
 ">"                 return '>';
 
 "&&"                return '&&';
+"&"                 return '&';
 "||"                return '||';
 "!"                 return '!';
 
@@ -113,9 +112,8 @@
 
 %right '+=' '-=' '*=' '/=' '%=' 
 %rigth '?'
-%left '+' '-'
-%left '*' '/'
-%left '%' '**'
+%left '+' '-' '&'
+%left '*' '/' '%'
 %left '<' '<=' '>' '>=' '==' '!='
 %left '&&' '||' 
 %left UMENOS
@@ -209,7 +207,8 @@ tipo_func_arit       : RPOW
 func_arit          : tipo_func_arit '(' expresion ')'
 ;
 
-expresion : '-' expresion %prec UMENOS	  
+expresion : '-' expresion %prec UMENOS	 
+          | expresion '&' expresion		  
           | expresion '+' expresion		  
           | expresion '-' expresion		  
           | expresion '*' expresion		  
