@@ -28,7 +28,6 @@
 "toInt"             return 'RTOINT';
 "toDouble"          return 'RTODOUBLE';
 "typeof"            return 'RTYPEOF';
-"function"          return 'RFUNCTION';
 "return"            return 'RRETURN';
 "if"                return 'RIF';
 "else"              return 'RELSE';
@@ -89,7 +88,7 @@
 \'[^\']*\'                 { yytext = yytext.substr(1,yyleng-2); return 'CARACTER'; }
 
 
-[0-9]+("."[0-9]+)\b        return 'DECIMAL';
+[0-9]+("."[0-9]+)\b         return 'DECIMAL';
 [0-9]+\b                    return 'ENTERO';
 "false"|"true"              return 'BOOLEANO';
 ([a-zA-Z])[a-zA-Z0-9_]*     return 'ID';
@@ -106,7 +105,8 @@
 
 
 %rigth '?'
-%left '&&' '||' 
+%left '||' 
+%left '&&' 
 %left '<' '<=' '>' '>=' '==' '!='
 %left '+' '-' '&'
 %left '*' '/' '%'
@@ -131,8 +131,7 @@ instruccion
     : declaracion
     | asignacion
     | impresion
-    | llamada ';'    
-    | cond_if
+    | funciones
 ;
 
 declaracion : tipo ID '=' expresion ';'
@@ -150,7 +149,7 @@ atributo : tipo ID
 
 lista_declaracion : lista_declaracion ',' ID
                   | ID
-;
+                ;
 
 asignacion : ID '=' expresion ';'
            | ID ID '=' ID '(' lista_parametros ')' ';'
@@ -194,12 +193,28 @@ cond_if         : RIF '(' expresion ')' bloque_instrucciones
                 | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones
 ;
 
-bloque_instrucciones   : '{' instrucciones '}'
+bloque_instrucciones   : '{' instrucciones_dentro '}'
                         | declaracion
                         | asignacion
                         | impresion
                         | llamada ';'
                        ; 
+
+cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'
+                ;
+
+bloque_switch   : bloque_switch estructura_case
+                | estructura_case
+                ;
+
+estructura_case : RCASE expresion ':' instrucciones_dentro
+                | RDEFAULT expresion ':' instrucciones_dentro
+                ;
+
+funciones       : ID ID '(' ')' '{' instrucciones_dentro '}' 
+                | ID ID '(' lista_atributos')' '{' '}' 
+                ;
+
 
 tipo_func_arit       : RPOW
                      | RSQRT
@@ -210,6 +225,20 @@ tipo_func_arit       : RPOW
 
 func_arit          : tipo_func_arit '(' expresion ')'
 ;
+
+instrucciones_dentro : instrucciones_dentro instruccion_dentro
+                     | instrucciones_dentro
+                    ;
+
+instruccion_dentro      : declaracion
+                        | asignacion                    
+                        | impresion
+                        | llamada ';'
+                        | cond_if
+                        | cond_switch
+                        | RRETURN ';'
+                        | RRETURN expresion ';'
+                        ;
 
 expresion : '-' expresion %prec UMENOS	 
           | expresion '&' expresion		  
