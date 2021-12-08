@@ -212,7 +212,7 @@ estructura_case : RCASE expresion ':' instrucciones_dentro
                 ;
 
 funciones       : ID ID '(' ')' '{' instrucciones_dentro '}' 
-                | ID ID '(' lista_atributos')' '{' '}' 
+                | ID ID '(' lista_atributos')' '{'instrucciones_dentro '}' 
                 ;
 
 
