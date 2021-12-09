@@ -8,10 +8,12 @@
 
 //RESERVADAS
 
+"void"              return 'RVOID';
 "null"              return 'RNULL';
 "int"               return 'RINT';
 "double"            return 'RDOUBLE';
 "String"            return 'RSTRING';
+"string"            return 'RSTRINGMIN';
 "boolean"           return 'RBOOLEAN';
 "char"              return 'RCHAR'
 "true"              return 'RTRUE';
@@ -40,7 +42,6 @@
 "in"                return 'RIN';
 "push"              return 'RPUSH';
 "pop"               return 'RPOP';
-"length"            return 'RLENGTH';
 "parse"             return 'RPARSE';
 "break"             return 'RBREAK';
 "continue"          return 'RCONTINUE';
@@ -104,12 +105,12 @@
 %}
 
 
-%rigth '?'
+%right'?'
 %left '||' 
 %left '&&' 
 %left '<' '<=' '>' '>=' '==' '!='
 %left '+' '-' '&'
-%left '*' '/' '%'
+%left '*' '/' '%' '^'
 %left UMENOS
 %right '!'
 %right '++' '--'
@@ -137,6 +138,7 @@ instruccion
 declaracion : tipo ID '=' expresion ';'
             | tipo lista_declaracion ';'
             | RSTRUCT ID '{' lista_atributos'}' ';'
+            | tipo '[' ']' id '=' cuerpo_array ';'
 ;
 
 lista_atributos : lista_atributos ',' atributo
@@ -151,6 +153,8 @@ lista_declaracion : lista_declaracion ',' ID
                   | ID
                 ;
 
+cuerpo_array        : '[' lista_parametros']' ;
+
 asignacion : ID '=' expresion ';'
            | ID ID '=' ID '(' lista_parametros ')' ';'
            ;
@@ -163,6 +167,7 @@ tipo_primitivo :    RINT
                |    RSTRING
                |    RBOOLEAN
                |    RCHAR
+               |    RVOID
 ;                    
 
 impresion       : RPRINTLN '(' lista_impresion ')' ';'
@@ -184,7 +189,7 @@ lista_parametros : lista_parametros ',' expresion
 nativas          : tipo '.' RPARSE '(' expresion ')'
                  | RTOINT '(' expresion ')'
                  | RTODOUBLE '(' expresion ')'
-                 | RSTRING '(' expresion ')'
+                 | RSTRINGMIN '(' expresion ')'
                  | RTYPEOF '(' expresion ')'                 
 ;                 
                  
@@ -208,11 +213,22 @@ bloque_switch   : bloque_switch estructura_case
                 ;
 
 estructura_case : RCASE expresion ':' instrucciones_dentro
-                | RDEFAULT expresion ':' instrucciones_dentro
+                | RDEFAULT ':' instrucciones_dentro
                 ;
 
-funciones       : ID ID '(' ')' '{' instrucciones_dentro '}' 
-                | ID ID '(' lista_atributos')' '{'instrucciones_dentro '}' 
+loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}' ;
+
+loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  ;
+
+loop_for        : RFOR '(' declarar_asignar ';' expresion ';'  declarar_asignar ')' '{' instrucciones_dentro '}' ;
+
+declarar_asignar: tipo ID '=' expresion
+                | ID '=' expresion
+                | expresion
+                ;
+
+funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}' 
+                | tipo ID '(' lista_atributos')' '{'instrucciones_dentro '}' 
                 ;
 
 
@@ -227,7 +243,7 @@ func_arit          : tipo_func_arit '(' expresion ')'
 ;
 
 instrucciones_dentro : instrucciones_dentro instruccion_dentro
-                     | instrucciones_dentro
+                     | instruccion_dentro
                     ;
 
 instruccion_dentro      : declaracion
@@ -236,12 +252,20 @@ instruccion_dentro      : declaracion
                         | llamada ';'
                         | cond_if
                         | cond_switch
+                        | loop_while
+                        | loop_dowhile
+                        | loop_for
                         | RRETURN ';'
                         | RRETURN expresion ';'
+                        | RBREAK ';'
+                        
+                        | expresion '++'';'
+                        | expresion '--'';'
                         ;
 
 expresion : '-' expresion %prec UMENOS	 
-          | expresion '&' expresion		  
+          | expresion '&' expresion	
+          | expresion '^' expresion	
           | expresion '+' expresion		  
           | expresion '-' expresion		  
           | expresion '*' expresion		  
@@ -266,6 +290,13 @@ expresion : '-' expresion %prec UMENOS
           | CARACTER
           | RNULL  
           
+          | ID '.' ID '(' ')'
+          | ID '.' ID '(' lista_parametros')'
+          | CADENA '.' ID '(' ')'
+          | CADENA '.' ID '(' lista_parametros ')'
+
+          | expresion '?' expresion ':' expresion
+
           | expresion '++'
           | expresion '--'       
           | llamada 
