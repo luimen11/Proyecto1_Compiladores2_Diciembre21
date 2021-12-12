@@ -15,6 +15,7 @@
 <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 
 
+
 <body>
     <table width="100%">
 
@@ -62,7 +63,7 @@
                 <!-- AREA DE TEXTO PARA RESULTADO -->
                 <div id="ide3">  
                     <br>              
-                    <input type="button" value="Interpretar"  onclick="javascript:analizar();" />
+                    <input type="button" value="Interpretar"  onclick="ejecutar();" />
                     <input type="button" value="Traducir"  />
                     
                     <br>
@@ -120,10 +121,21 @@
 
         
     </table>    
-   
+    
+     <script>var exports = {};</script>
+          
+     <script src="./Interfaces/Instruccion.js"></script>
+     <script src="./Interfaces/Expresion.js"></script>
+     <script src="./AST/AST.js"></script>
+     <script src="./AST/Tipo.js"></script>
+     <script src="./Instrucciones/Print.js"></script>
+     <script src="./Expresiones/Operacion.js"></script>     
+     <script src="./Expresiones/Primitivo.js"></script>
+     <script src="AST/Entorno.js"></script>
+     <script src="./Gramatica/gramatica.js"></script>    
+    <script src="main.js"></script>  
+    
 
-    <script src="calculator.js"></script>
-    <script src="gramaticaPreliminar.js"></script>    
     <script src="./resources/js/codemirror.js"></script>
     <script src="./resources/js/Jquery.js"></script>
     <script src="./resources/js/bootstrap.js"></script>
@@ -152,13 +164,7 @@
         mode: "javascript"        
     });    
     txttraduc.setSize(450, 500);
-    
-    function analizar() {
-        
-        var result = gramaticaPreliminar.parse(entrada.getDoc().getValue());    
-        salida.getDoc().setValue(String(result));
-    }
-
+   
 
 </script>
 </body>
