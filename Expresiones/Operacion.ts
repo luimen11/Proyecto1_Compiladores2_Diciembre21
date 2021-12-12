@@ -4,6 +4,8 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 
 export enum Operador {
+    CONCATENACION,
+    REPETICION,
     SUMA,
     RESTA,
     MULTIPLICACION,
@@ -70,6 +72,46 @@ export class Operacion implements Expresion {
             let op1 = this.op_izquierda.getValorImplicito(ent, arbol);
             let op2 = this.op_derecha.getValorImplicito(ent, arbol);
             
+            // concatenacion
+            if (this.operador == Operador.CONCATENACION)
+            {
+                if (typeof(op1==="string") && typeof(op2==="string"))
+                {
+                    return op1 + op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    return null;
+                }
+            }
+            // repeticion
+            if (this.operador == Operador.REPETICION)
+            {
+                if (typeof(op1==="string") && typeof(op2==="number"))
+                {
+                    if(this.isInt(Number(op2))){
+                        
+                        let repetir:number= 0;
+                        let textoRepetir:string = "";
+                        while (repetir < op2) {
+                            textoRepetir += op1;    
+                            repetir++;
+                        }
+                        return textoRepetir;
+                        
+                    } else {
+                        console.log("Error de tipos de datos no permitidos realizando una repeticion");
+                    }
+
+                   
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando una repeticion");
+                    return null;
+                }
+            }
             //suma
             if (this.operador == Operador.SUMA)
             {
@@ -157,6 +199,73 @@ export class Operacion implements Expresion {
                     return null;
                 }
             }
+            // mayor o igual 
+            else if (this.operador == Operador.MAYOR_IGUA_QUE)
+            {
+                if (typeof(op1==="number") && typeof(op2==="number"))
+                {
+                    return op1 >= op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    return null;
+                }
+            }
+            
+            // menor
+            else if (this.operador == Operador.MENOR_QUE)
+            {
+                if (typeof(op1==="number") && typeof(op2==="number"))
+                {
+                    return op1 < op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    return null;
+                }
+            }
+           // menor o igual
+           else if (this.operador == Operador.MENOR_IGUA_QUE)
+           {
+               if (typeof(op1==="number") && typeof(op2==="number"))
+               {
+                   return op1 <= op2;
+               }
+               else
+               {
+                   console.log("Error de tipos de datos no permitidos realizando una suma");
+                   return null;
+               }
+           }
+           // igual igual
+           else if (this.operador == Operador.IGUAL_IGUAL)
+           {
+               if (typeof(op1==="number") && typeof(op2==="number"))
+               {
+                   return op1 == op2;
+               }
+               else
+               {
+                   console.log("Error de tipos de datos no permitidos realizando una suma");
+                   return null;
+               }
+           }
+
+           // diferente
+           else if (this.operador == Operador.DIFERENTE_QUE)
+           {
+               if (typeof(op1==="number") && typeof(op2==="number"))
+               {
+                   return op1 != op2;
+               }
+               else
+               {
+                   console.log("Error de tipos de datos no permitidos realizando una suma");
+                   return null;
+               }
+           }
 
             // AND
             else if (this.operador == Operador.AND)
@@ -164,6 +273,19 @@ export class Operacion implements Expresion {
                 if (typeof(op1==="boolean") && typeof(op2==="boolean"))
                 {
                     return op1 && op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando un ANd");
+                    return null;
+                }
+            }
+            // OR
+            else if (this.operador == Operador.OR)
+            {
+                if (typeof(op1==="boolean") && typeof(op2==="boolean"))
+                {
+                    return op1 || op2;
                 }
                 else
                 {

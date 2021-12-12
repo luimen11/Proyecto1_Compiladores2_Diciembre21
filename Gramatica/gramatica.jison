@@ -8,6 +8,7 @@
 
 //RESERVADAS
 
+"void"              return 'RVOID';
 "null"              return 'RNULL';
 "int"               return 'RINT';
 "double"            return 'RDOUBLE';
@@ -104,12 +105,12 @@
 %}
 
 
-%rigth '?'
+%right'?'
 %left '||' 
 %left '&&' 
 %left '<' '<=' '>' '>=' '==' '!='
 %left '+' '-' '&'
-%left '*' '/' '%'
+%left '*' '/' '%' '^'
 %left UMENOS
 %right '!'
 %right '++' '--'
@@ -194,7 +195,10 @@ cond_if         : RIF '(' expresion ')' bloque_instrucciones
 ;
 
 bloque_instrucciones   : '{' instrucciones_dentro '}'
-
+                        | declaracion
+                        | asignacion
+                        | impresion
+                        | llamada ';'
                        ; 
 
 cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'
@@ -224,7 +228,7 @@ func_arit          : tipo_func_arit '(' expresion ')'
 ;
 
 instrucciones_dentro : instrucciones_dentro instruccion_dentro
-                     | instrucciones_dentro
+                     | instruccion_dentro
                     ;
 
 instruccion_dentro      : declaracion
@@ -237,31 +241,35 @@ instruccion_dentro      : declaracion
                         | RRETURN expresion ';'
                         ;
 
-expresion : '-' expresion %prec UMENOS	 
-          | expresion '&' expresion		  
+expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Operador.MENOS_UNARIO, @1.first_line, @1.first_column); }
+          | expresion '&' expresion		         { $$ = new Operacion($1,$3,Operador.CONCATENACION, @1.first_line, @1.first_column); }	
+          | expresion '^' expresion	             { $$ = new Operacion($1,$3,Operador.REPETICION, @1.first_line, @1.first_column); }	
+
           | expresion '+' expresion              { $$ = new Operacion($1,$3,Operador.SUMA, @1.first_line, @1.first_column); }		  
-          | expresion '-' expresion		  
-          | expresion '*' expresion		  
-          | expresion '/' expresion	      
-          | expresion '%' expresion	      
-          | expresion '<' expresion		  
-          | expresion '>' expresion		  
-          | expresion '<=' expresion	  
-          | expresion '>=' expresion	  
-          | expresion '==' expresion	  
-          | expresion '!=' expresion
-          | expresion '&&' expresion
-          | expresion '||' expresion 
-          | '!' expresion	   	  
+          | expresion '-' expresion		         { $$ = new Operacion($1,$3,Operador.RESTA, @1.first_line, @1.first_column); }		     
+          | expresion '*' expresion		         { $$ = new Operacion($1,$3,Operador.MULTIPLICACION, @1.first_line, @1.first_column); }   
+          | expresion '/' expresion	             { $$ = new Operacion($1,$3,Operador.DIVISION, @1.first_line, @1.first_column); }   
+          | expresion '%' expresion	             { $$ = new Operacion($1,$3,Operador.MODULO, @1.first_line, @1.first_column); }   
+          
+          | expresion '<' expresion		         { $$ = new Operacion($1,$3,Operador.MENOR_QUE, @1.first_line, @1.first_column); }
+          | expresion '>' expresion		         { $$ = new Operacion($1,$3,Operador.MAYOR_QUE, @1.first_line, @1.first_column); }
+          | expresion '<=' expresion	         { $$ = new Operacion($1,$3,Operador.MENOR_IGUA_QUE, @1.first_line, @1.first_column); }
+          | expresion '>=' expresion	         { $$ = new Operacion($1,$3,Operador.MAYOR_IGUA_QUE, @1.first_line, @1.first_column); }
+          | expresion '==' expresion	         { $$ = new Operacion($1,$3,Operador.IGUAL_IGUAL, @1.first_line, @1.first_column); }
+          | expresion '!=' expresion             { $$ = new Operacion($1,$3,Operador.DIFERENTE_QUE, @1.first_line, @1.first_column); }
+          
+          | expresion '&&' expresion             { $$ = new Operacion($1,$3,Operador.AND, @1.first_line, @1.first_column); }
+          | expresion '||' expresion             { $$ = new Operacion($1,$3,Operador.OR, @1.first_line, @1.first_column); }
+          | '!' expresion	   	                 { $$ = new Operacion($2,$2,Operador.NOT, @1.first_line, @1.first_column); }
           
           | ID                           
           | ENTERO		                        { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }		    
-          | DECIMAL				    
-          | RTRUE				
-          | RFALSE	     		
-          | CADENA	 
-          | CARACTER
-          | RNULL  
+          | DECIMAL				                { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }
+          | RTRUE				                { $$ = new Primitivo(true,  this._$.first_line, this._$.first_column); }
+          | RFALSE	     	                    { $$ = new Primitivo(false, this._$.first_line, this._$.first_column); }
+          | CADENA	                            { $$ = new Primitivo($1, @1.first_line, @1.first_column); }
+          | CARACTER                            { $$ = new Primitivo($1, @1.first_line, @1.first_column); }
+          | RNULL                               { $$ = new Primitivo(null, @1.first_line, @1.first_column); }
           
           | expresion '++'
           | expresion '--'       
