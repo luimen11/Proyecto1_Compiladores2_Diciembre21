@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Operacion = exports.Operador = void 0;
-const Tipo_1 = require("../AST/Tipo");
 var Operador;
 (function (Operador) {
     Operador[Operador["SUMA"] = 0] = "SUMA";

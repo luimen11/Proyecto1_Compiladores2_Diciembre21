@@ -41,6 +41,7 @@ var Entorno = /** @class */ (function () {
     };
     Entorno.prototype.getSimbolo = function (id) {
         id = id.toLowerCase();
+        //modifiicar
         for (var e = this; e != null; e = e.anterior) {
             if (e.tabla[id] !== undefined) {
                 return e.tabla[id];

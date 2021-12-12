@@ -25,12 +25,20 @@ export class Print implements Instruccion{
 
     ejecutar(ent: Entorno, arbol: AST) {
         const valor = this.expresion.getValorImplicito(ent, arbol);
+        let actual:String;                
+        var inputValue = (<HTMLInputElement>document.getElementById("txtSalida")).value;
+        //actual = document.getElementById("txtSalida").value;
         if(valor!==null){
-            if(!this.salto)
-               process.stdout.write('> ${valor}');
+            if(!this.salto){
+               //process.stdout.write('> ${valor}');
+               (<HTMLInputElement>document.getElementById("txtSalida")).value = inputValue + '\n' + valor;
+               console.log('>', valor)
+            }
             else
+            (<HTMLInputElement>document.getElementById("txtSalida")).value = inputValue + ' ' + valor;
             console.log('>',valor);
         }else{
+            (<HTMLInputElement>document.getElementById("txtSalida")).value = "Error, no se pueden imprimir valores nulos";
             console.log('>> Error, no se pueden imprimir valores nulos');
         }
     }

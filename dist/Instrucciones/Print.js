@@ -14,14 +14,25 @@ class Print {
         throw new Error("Method not implemented.");
     }
     ejecutar(ent, arbol) {
-        const valor = this.expresion.getValorImplicito(ent, arbol);
+        const valor = this.expresion.getValorImplicito(ent, arbol);        
+        let inputValue =salida.getValue();
+        let actual;
+        //actual = document.getElementById("txtSalida").value;
         if (valor !== null) {
-            if (!this.salto)
-                process.stdout.write('> ${valor}');
-            else
+            if (!this.salto) {
+                //process.stdout.write('> ${valor}');
+                actual = inputValue + '\n' + valor;
+                salida.setValue(actual)
                 console.log('>', valor);
+            }
+            else{
+                actual = inputValue + ' ' + valor;
+                salida.setValue() = actual;
+                console.log('>', valor);
+            }
         }
         else {
+            salida.setValue() = "Error, no se pueden imprimir valores nulos";
             console.log('>> Error, no se pueden imprimir valores nulos');
         }
     }

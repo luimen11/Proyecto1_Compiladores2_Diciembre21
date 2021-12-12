@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primitivo = void 0;
-const Tipo_1 = require("../AST/Tipo");
 class Primitivo {
     constructor(valor, linea, columna) {
         this.linea = linea;
