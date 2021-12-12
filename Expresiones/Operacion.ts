@@ -144,6 +144,36 @@ export class Operacion implements Expresion {
                 }
             }
 
+            // mayor
+            else if (this.operador == Operador.MAYOR_QUE)
+            {
+                if (typeof(op1==="number") && typeof(op2==="number"))
+                {
+                    return op1 > op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    return null;
+                }
+            }
+
+            // AND
+            else if (this.operador == Operador.AND)
+            {
+                if (typeof(op1==="boolean") && typeof(op2==="boolean"))
+                {
+                    return op1 && op2;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando un ANd");
+                    return null;
+                }
+            }
+
+            
+
         }else{
             let op1 = this.op_izquierda.getValorImplicito(ent, arbol);
             if (this.operador == Operador.MENOS_UNARIO)
@@ -155,6 +185,20 @@ export class Operacion implements Expresion {
                 else
                 {
                     console.log("Error de tipos de datos no permitidos realizando una operación unaria");
+                    return null;
+                }
+            }
+
+            // not
+            else if (this.operador == Operador.NOT)
+            {
+                if (typeof(op1==="boolean"))
+                {
+                    return !op1 ;
+                }
+                else
+                {
+                    console.log("Error de tipos de datos no permitidos realizando un not");
                     return null;
                 }
             }

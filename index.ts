@@ -5,6 +5,7 @@ import { Instruccion } from "./Interfaces/Instruccion";
 const gramatica = require('./Gramatica/gramatica');
 
 function ejecutarCodigo(entrada:string){
+    console.log("entre aqui");
     //traigo todas las raices
     const ast = gramatica.parse(entrada);
     //const ast:AST = new AST(instrucciones);
@@ -14,3 +15,4 @@ function ejecutarCodigo(entrada:string){
         element.ejecutar(entornoGlobal,ast);
     })
 }
+

@@ -54,6 +54,7 @@ export class Entorno{
 
     getSimbolo(id:string):any{
         id = id.toLowerCase();
+        //modifiicar
         for (let e:Entorno = this; e != null; e = e.anterior)
         {
             if (e.tabla[id]!==undefined)
