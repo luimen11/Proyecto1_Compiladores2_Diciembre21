@@ -129,14 +129,14 @@ instrucciones
 ;
 
 instruccion
-    : declaracion
-    | asignacion
+    : declaracion                        { $$ = $1 }
+    | asignacion                         { $$ = $1 }
     | impresion                          { $$ = $1 }
     | funciones
 ;
 
-declaracion : tipo ID '=' expresion ';'
-            | tipo lista_declaracion ';'
+declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
+            | tipo lista_declaracion ';'                { $$ = new Declaracion($2, $1, @1.first_line, @1.first_column); } 
             | RSTRUCT ID '{' lista_atributos'}' ';'
 ;
 
@@ -148,22 +148,23 @@ atributo : tipo ID
          | ID ID
          ;
 
-lista_declaracion : lista_declaracion ',' ID
-                  | ID
+lista_declaracion : lista_declaracion ',' ID             { $1.push($3); $$ = $1; }
+                  | ID                                   { $$ = [$1] } 
                 ;
 
 asignacion : ID '=' expresion ';'
            | ID ID '=' ID '(' lista_parametros ')' ';'
            ;
 
-tipo        : tipo_primitivo
+tipo        : tipo_primitivo        { $$ = $1 }
 ;
 
-tipo_primitivo :    RINT
-               |    RDOUBLE
-               |    RSTRING
-               |    RBOOLEAN
-               |    RCHAR
+tipo_primitivo :    RINT            { $$ =  Tipo.INT;} 
+               |    RDOUBLE         { $$ =  Tipo.DOUBLE;} 
+               |    RSTRING         { $$ =  Tipo.STRING;} 
+               |    RBOOLEAN        { $$ =  Tipo.BOOL;} 
+               |    RCHAR           { $$ =  Tipo.CHAR;} 
+               |    RVOID           { $$ =  Tipo.VOID;} 
 ;                    
 
 impresion       : RPRINTLN '(' lista_impresion ')' ';'
@@ -262,7 +263,7 @@ expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Opera
           | expresion '||' expresion             { $$ = new Operacion($1,$3,Operador.OR, @1.first_line, @1.first_column); }
           | '!' expresion	   	                 { $$ = new Operacion($2,$2,Operador.NOT, @1.first_line, @1.first_column); }
           
-          | ID                           
+          | ID                                  { $$ = new AccesoVariable($1, @1.first_line, @1.first_column); }
           | ENTERO		                        { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }		    
           | DECIMAL				                { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }
           | RTRUE				                { $$ = new Primitivo(true,  this._$.first_line, this._$.first_column); }
@@ -276,5 +277,5 @@ expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Opera
           | llamada 
           | nativas
           | func_arit
-          | '(' expresion ')'	          	
+          | '(' expresion ')'	          	     { $$ = $2 } 
           ;

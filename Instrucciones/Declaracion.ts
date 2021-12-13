@@ -59,6 +59,8 @@ export class Declaracion implements Instruccion{
             return false;
         else if(this. tipo === Tipo.STRING)
             return "";
+        else if(this. tipo === Tipo.CHAR)
+            return "";
         else 
             return null;
     }
