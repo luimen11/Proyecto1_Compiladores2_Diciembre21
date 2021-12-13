@@ -13,21 +13,21 @@ var Primitivo = /** @class */ (function () {
     Primitivo.prototype.getTipo = function (ent, arbol) {
         var valor = this.getValorImplicito(ent, arbol);
         if (typeof (valor) === 'boolean') {
-            return Tipo_1.Tipo.BOOL;
+            return Tipo.BOOL;
         }
         else if (typeof (valor) === 'string') {
-            return Tipo_1.Tipo.STRING;
+            return Tipo.STRING;
         }
         else if (typeof (valor) === 'number') {
             if (this.isInt(Number(valor))) {
-                return Tipo_1.Tipo.INT;
+                return Tipo.INT;
             }
-            return Tipo_1.Tipo.DOUBLE;
+            return Tipo.DOUBLE;
         }
         else if (valor === null) {
-            return Tipo_1.Tipo.NULL;
+            return Tipo.NULL;
         }
-        return Tipo_1.Tipo.VOID;
+        return Tipo.VOID;
     };
     Primitivo.prototype.getValorImplicito = function (ent, arbol) {
         return this.valor;
