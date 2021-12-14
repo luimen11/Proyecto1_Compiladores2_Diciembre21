@@ -2,6 +2,8 @@ import { AST } from "../AST/AST";
 import { Entorno } from "../AST/Entorno";
 import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
+import { Error } from "../Error";
+import { ReporteErrores } from "../ReporteErrores";
 
 export enum Operador {
     CONCATENACION,
@@ -39,7 +41,7 @@ export class Operacion implements Expresion {
         this.operador = operacion;
     }
     traducir(ent: Entorno, arbol: AST) {
-        throw new Error("Method not implemented.");
+        //throw new Error("Method not implemented.");
     }
 
     getTipo(ent: Entorno, arbol: AST): Tipo {
@@ -115,13 +117,26 @@ export class Operacion implements Expresion {
             //suma
             if (this.operador == Operador.SUMA)
             {
-                if (typeof(op1==="number") && typeof(op2==="number"))
-                {
+                if (typeof(op1==="number") && typeof(op2==="number"))    {
+                                       
                     return op1 + op2;
-                }
+
+                }            
+                    
+              
+
+                                  
+
+
+
+                                
                 else
                 {
                     console.log("Error de tipos de datos no permitidos realizando una suma");
+                    var prueba = new Error("semantico", "error",1,1);
+                    const re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
+
                     return null;
                 }
             }

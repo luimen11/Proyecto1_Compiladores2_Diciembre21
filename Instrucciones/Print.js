@@ -18,7 +18,7 @@ class Print {
         let inputValue =salida.getValue();
         let actual;
         //actual = document.getElementById("txtSalida").value;
-        if (valor !== null) {
+        if (valor != null) {
             if (!this.salto) {
                 //process.stdout.write('> ${valor}');
                 actual = inputValue + '\n' + valor;
@@ -32,7 +32,7 @@ class Print {
             }
         }
         else {
-            salida.setValue() = "Error, no se pueden imprimir valores nulos";
+            salida.setValue("Error, no se pueden imprimir valores nulos");
             console.log('>> Error, no se pueden imprimir valores nulos');
         }
     }

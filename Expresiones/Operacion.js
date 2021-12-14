@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.Operacion = exports.Operador = void 0;
+
 var Operador;
 (function (Operador) {
     Operador[Operador["CONCATENACION"] = 0] = "CONCATENACION";
@@ -31,26 +32,26 @@ var Operacion = /** @class */ (function () {
         this.operador = operacion;
     }
     Operacion.prototype.traducir = function (ent, arbol) {
-        throw new Error("Method not implemented.");
+        //throw new Error("Method not implemented.");
     };
     Operacion.prototype.getTipo = function (ent, arbol) {
         var valor = this.getValorImplicito(ent, arbol);
         if (typeof (valor) === 'boolean') {
-            return Tipo.BOOL;
+            return Tipo_1.Tipo.BOOL;
         }
         else if (typeof (valor) === 'string') {
-            return Tipo.STRING;
+            return Tipo_1.Tipo.STRING;
         }
         else if (typeof (valor) === 'number') {
             if (this.isInt(Number(valor))) {
-                return Tipo.INT;
+                return Tipo_1.Tipo.INT;
             }
-            return Tipo.DOUBLE;
+            return Tipo_1.Tipo.DOUBLE;
         }
         else if (valor === null) {
-            return Tipo.NULL;
+            return Tipo_1.Tipo.NULL;
         }
-        return Tipo.VOID;
+        return Tipo_1.Tipo.VOID;
     };
     Operacion.prototype.getValorImplicito = function (ent, arbol) {
         if (this.operador !== Operador.MENOS_UNARIO && this.operador !== Operador.NOT) {
@@ -90,10 +91,17 @@ var Operacion = /** @class */ (function () {
             //suma
             if (this.operador == Operador.SUMA) {
                 if (typeof (op1 === "number") && typeof (op2 === "number")) {
+                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    var prueba = new Error("semantico", "error", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return op1 + op2;
                 }
                 else {
                     console.log("Error de tipos de datos no permitidos realizando una suma");
+                    var prueba = new Error("semantico", "error", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }

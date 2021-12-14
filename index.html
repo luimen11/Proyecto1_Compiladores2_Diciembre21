@@ -65,6 +65,10 @@
                     <br>              
                     <input type="button" value="Interpretar"  onclick="ejecutar();" />
                     <input type="button" value="Traducir"  />
+                    <input type="button" value="AST"  />
+                    <input type="button" value="Tabla de Simbolos"  />
+                    <input type="button" value="Reporte Gramatical"  />
+                    <input type="button" value="Errores" onclick="mostrarErrores();">
                     
                     <br>
                 </div>                  
@@ -82,45 +86,21 @@
             </td>            
         </tr>
 
-
-        <tr>
-            <td align="center" colspan="3">                 
-                <h4> Tabla de simbolos </h4>
-                <!-- AREA DE TEXTO PARA RESULTADO -->                
-                <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
-                    
-                </div>  
-                <hr>
-                <br>
-            </td>
-        </tr>
-
-        <tr>
-            <td align="center" colspan="3">                 
-                <h4> Reporte de Errores</h4>
-                <!-- AREA DE TEXTO PARA RESULTADO -->                
-                <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
-                    
-                </div>  
-                <hr>
-                <br>
-            </td>            
-        </tr>
-
-        <tr>
-            <td align="center" colspan="3">                 
-                <h4> Reporte gramatical</h4>
-                <!-- AREA DE TEXTO PARA RESULTADO -->                
-                <div id="ide3 style=" height: 500px; width: 1000px; overflow-y: scroll; ">                    
-                    
-                </div>  
-                <hr>
-            </td>            
-        </tr>
-
-
         
-    </table>    
+    </table> 
+    
+    <div id="errores" style="display:none">
+        <h2>Tabla de errores</h2>
+        <table id="tablaErrores" align="center" style="width:100%">
+            <tr>
+                <th>Tipo</th>
+                <th>Descripcion</th>
+                <th>Linea</th>
+                <th>Columna</th>
+            </tr>
+        </table>
+    </div>
+    
     
      <script>var exports = {};</script>
           
@@ -138,6 +118,8 @@
      <script src="./Expresiones/AccesoVariable.js"></script>
      <script src="./AST/Entorno.js"></script>
      <script src="./Gramatica/gramatica.js"></script>    
+     <script src="./Error.js"></script>
+     <script src="./ReporteErrores.js"></script>
     <script src="main.js"></script>  
     
 
