@@ -133,11 +133,13 @@ instruccion
     | asignacion                         { $$ = $1 }
     | impresion                          { $$ = $1 }
     | funciones
+    | cond_if                            { $$ = $1 }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
             | tipo lista_declaracion ';'                { $$ = new Declaracion($2, $1, @1.first_line, @1.first_column); } 
             | RSTRUCT ID '{' lista_atributos'}' ';'
+            | tipo '[' ']' id '=' cuerpo_array ';'
 ;
 
 lista_atributos : lista_atributos ',' atributo
@@ -152,7 +154,9 @@ lista_declaracion : lista_declaracion ',' ID             { $1.push($3); $$ = $1;
                   | ID                                   { $$ = [$1] } 
                 ;
 
-asignacion : ID '=' expresion ';'
+cuerpo_array        : '[' lista_parametros']' ;
+
+asignacion : ID '=' expresion ';'                           { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); } 
            | ID ID '=' ID '(' lista_parametros ')' ';'
            ;
 
@@ -190,12 +194,12 @@ nativas          : tipo '.' RPARSE '(' expresion ')'
                  | RTYPEOF '(' expresion ')'                 
 ;                 
                  
-cond_if         : RIF '(' expresion ')' bloque_instrucciones                                 
+cond_if         : RIF '(' expresion ')' bloque_instrucciones                                { $$ = new If($3, $5, [], @1.first_line, @1.first_column); }                 
                 | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                 
-                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones
+                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     { $$ = new If($3, $5, $7, @1.first_line, @1.first_column); }
 ;
 
-bloque_instrucciones   : '{' instrucciones_dentro '}'
+bloque_instrucciones   : '{' instrucciones_dentro '}'                                         { $$ = $1 }
                         | declaracion
                         | asignacion
                         | impresion
@@ -213,6 +217,17 @@ estructura_case : RCASE expresion ':' instrucciones_dentro
                 | RDEFAULT expresion ':' instrucciones_dentro
                 ;
 
+loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}' ;
+
+loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  ;
+
+loop_for        : RFOR '(' declarar_asignar ';' expresion ';'  declarar_asignar ')' '{' instrucciones_dentro '}' ;
+
+declarar_asignar: tipo ID '=' expresion
+                | ID '=' expresion
+                | expresion
+                ;
+
 funciones       : ID ID '(' ')' '{' instrucciones_dentro '}' 
                 | ID ID '(' lista_atributos')' '{'instrucciones_dentro '}' 
                 ;
@@ -228,18 +243,25 @@ tipo_func_arit       : RPOW
 func_arit          : tipo_func_arit '(' expresion ')'
 ;
 
-instrucciones_dentro : instrucciones_dentro instruccion_dentro
-                     | instruccion_dentro
+instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.push($2); $$ = $1;}
+                     | instruccion_dentro                               { $$ = [$1]; }
                     ;
 
 instruccion_dentro      : declaracion
                         | asignacion                    
-                        | impresion
+                        | impresion                                      { $$ = $1 }
                         | llamada ';'
-                        | cond_if
+                        | cond_if                                        { $$ = $1 } 
                         | cond_switch
+                        | loop_while
+                        | loop_dowhile
+                        | loop_for
                         | RRETURN ';'
                         | RRETURN expresion ';'
+                        | RBREAK ';'
+                        
+                        | expresion '++'';'
+                        | expresion '--'';'
                         ;
 
 expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Operador.MENOS_UNARIO, @1.first_line, @1.first_column); }
@@ -272,6 +294,12 @@ expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Opera
           | CARACTER                            { $$ = new Primitivo($1, @1.first_line, @1.first_column); }
           | RNULL                               { $$ = new Primitivo(null, @1.first_line, @1.first_column); }
           
+          | ID '.' ID '(' ')'
+          | ID '.' ID '(' lista_parametros')'
+          | CADENA '.' ID '(' ')'
+          | CADENA '.' ID '(' lista_parametros ')'
+          | expresion '?' expresion ':' expresion
+
           | expresion '++'
           | expresion '--'       
           | llamada 
