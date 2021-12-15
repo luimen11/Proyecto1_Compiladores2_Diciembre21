@@ -5,6 +5,7 @@ exports.Print = void 0;
 class Print {
     // meter listado de print print(a,b)
     constructor(exp, linea, columna, saltoLinea = false) {
+														  
         this.expresion = exp;
         this.linea = linea;
         this.columna = columna;
@@ -32,9 +33,10 @@ class Print {
             }
         }
         else {
-            salida.setValue("Error, no se pueden imprimir valores nulos");
+            document.getElementById("console").value = "Error, no se pueden imprimir valores nulos";
             console.log('>> Error, no se pueden imprimir valores nulos');
         }
     }
 }
+	 
 exports.Print = Print;

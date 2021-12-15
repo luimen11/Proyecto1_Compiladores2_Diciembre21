@@ -36,7 +36,7 @@ export class Print implements Instruccion{
             }
             else
             (<HTMLInputElement>document.getElementById("txtSalida")).value = inputValue + ' ' + valor;
-            console.log('>',valor);
+            
         }else{
             (<HTMLInputElement>document.getElementById("txtSalida")).value = "Error, no se pueden imprimir valores nulos";
             console.log('>> Error, no se pueden imprimir valores nulos');

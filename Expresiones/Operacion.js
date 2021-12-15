@@ -1,7 +1,6 @@
 "use strict";
 exports.__esModule = true;
 exports.Operacion = exports.Operador = void 0;
-
 var Operador;
 (function (Operador) {
     Operador[Operador["CONCATENACION"] = 0] = "CONCATENACION";
@@ -37,21 +36,42 @@ var Operacion = /** @class */ (function () {
     Operacion.prototype.getTipo = function (ent, arbol) {
         var valor = this.getValorImplicito(ent, arbol);
         if (typeof (valor) === 'boolean') {
-            return Tipo_1.Tipo.BOOL;
+            return Tipo.BOOL;
         }
         else if (typeof (valor) === 'string') {
-            return Tipo_1.Tipo.STRING;
+            return Tipo.STRING;
         }
         else if (typeof (valor) === 'number') {
             if (this.isInt(Number(valor))) {
-                return Tipo_1.Tipo.INT;
+                return Tipo.INT;
             }
-            return Tipo_1.Tipo.DOUBLE;
+            return Tipo.DOUBLE;
         }
         else if (valor === null) {
-            return Tipo_1.Tipo.NULL;
+            return Tipo.NULL;
         }
-        return Tipo_1.Tipo.VOID;
+        return Tipo.VOID;
+    };
+    //Metodo que solo se utiliza para determinar los tipos especficios de datos permitidos
+    Operacion.prototype.getTipoDato = function (valor) {
+        if (typeof (valor) === 'boolean')
+            return "boolean";
+        else if (typeof (valor) === 'number') {
+            if (this.isInt(Number(valor))) {
+                return "int";
+            }
+            return "double";
+        }
+        else if (typeof (valor) === 'string') {
+            if (valor.length == 1) {
+                return "char";
+            }
+            else
+                return "string";
+        }
+        else if (valor === null) {
+            return "null";
+        }
     };
     Operacion.prototype.getValorImplicito = function (ent, arbol) {
         if (this.operador !== Operador.MENOS_UNARIO && this.operador !== Operador.NOT) {
@@ -63,7 +83,10 @@ var Operacion = /** @class */ (function () {
                     return op1 + op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos realizando una concatenacion");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una concatenacion", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -81,25 +104,51 @@ var Operacion = /** @class */ (function () {
                     }
                     else {
                         console.log("Error de tipos de datos no permitidos realizando una repeticion");
+                        var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una repeticion", 1, 1);
+                        var re = ReporteErrores.getInstance();
+                        re.pushError(prueba);
                     }
                 }
                 else {
                     console.log("Error de tipos de datos no permitidos realizando una repeticion");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una repeticion", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
             //suma
             if (this.operador == Operador.SUMA) {
-                if (typeof (op1 === "number") && typeof (op2 === "number")) {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
-                    var prueba = new Error("semantico", "error", 1, 1);
-                    var re = ReporteErrores.getInstance();
-                    re.pushError(prueba);
+                if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "int")) {
                     return op1 + op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "double")) {
+                    return op1 + op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 + parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "int")) {
+                    return op1 + op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "double")) {
+                    return op1 + op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 + parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "int")) {
+                    return parseInt(op1) + op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "double")) {
+                    return parseInt(op1) + op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return parseInt(op1) + parseInt(op2);
                 }
                 else {
                     console.log("Error de tipos de datos no permitidos realizando una suma");
-                    var prueba = new Error("semantico", "error", 1, 1);
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una suma", 1, 1);
                     var re = ReporteErrores.getInstance();
                     re.pushError(prueba);
                     return null;
@@ -107,49 +156,149 @@ var Operacion = /** @class */ (function () {
             }
             //resta
             else if (this.operador == Operador.RESTA) {
-                if (typeof (op1 === "number") && typeof (op2 === "number")) {
+                if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "int")) {
                     return op1 - op2;
                 }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "double")) {
+                    return op1 - op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 - parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "int")) {
+                    return op1 - op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "double")) {
+                    return op1 - op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 - parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "int")) {
+                    return parseInt(op1) - op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "double")) {
+                    return parseInt(op1) - op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return parseInt(op1) - parseInt(op2);
+                }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos realizando una resta");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una resta", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
             //multiplicación
             else if (this.operador == Operador.MULTIPLICACION) {
-                if (typeof (op1 === "number") && typeof (op2 === "number")) {
+                if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "int")) {
                     return op1 * op2;
                 }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "double")) {
+                    return op1 * op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 * parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "int")) {
+                    return op1 * op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "double")) {
+                    return op1 * op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 * parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "int")) {
+                    return parseInt(op1) * op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "double")) {
+                    return parseInt(op1) * op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return parseInt(op1) * parseInt(op2);
+                }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos realizando una multiplicacion.");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una multiplicacion", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
             //division
             else if (this.operador == Operador.DIVISION) {
-                if (typeof (op1 === "number") && typeof (op2 === "number")) {
-                    if (op2 === 0) {
-                        console.log("Resultado indefinido, no puede ejecutarse operación sobre cero.");
-                        return null;
-                    }
+                if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "int")) {
                     return op1 / op2;
                 }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "double")) {
+                    return op1 / op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 / parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "int")) {
+                    return op1 / op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "double")) {
+                    return op1 / op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 / parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "int")) {
+                    return parseInt(op1) / op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "double")) {
+                    return parseInt(op1) / op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return parseInt(op1) / parseInt(op2);
+                }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos realizando una division.");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una division", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
             //modulo
             else if (this.operador == Operador.MODULO) {
-                if (typeof (op1 === "number") && typeof (op2 === "number")) {
-                    if (op2 === 0) {
-                        console.log("Resultado indefinido, no puede ejecutarse operación sobre cero.");
-                        return null;
-                    }
+                if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "int")) {
                     return op1 % op2;
                 }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "double")) {
+                    return op1 % op2;
+                }
+                else if ((this.getTipoDato(op1) == "int") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 % parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "int")) {
+                    return op1 % op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "double")) {
+                    return op1 % op2;
+                }
+                else if ((this.getTipoDato(op1) == "double") && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return op1 % parseInt(op2);
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "int")) {
+                    return parseInt(op1) % op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "double")) {
+                    return parseInt(op1) % op2;
+                }
+                else if ((this.getTipoDato(op1) == "char") && !isNaN(Number(op1)) && (this.getTipoDato(op2) == "char") && !isNaN(Number(op2))) {
+                    return parseInt(op1) % parseInt(op2);
+                }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos realizando una modulo.");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una modulo", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -159,7 +308,10 @@ var Operacion = /** @class */ (function () {
                     return op1 > op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional >");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional >", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -169,7 +321,10 @@ var Operacion = /** @class */ (function () {
                     return op1 >= op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional >=");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional >=", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -179,7 +334,10 @@ var Operacion = /** @class */ (function () {
                     return op1 < op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional <");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional <", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -189,7 +347,10 @@ var Operacion = /** @class */ (function () {
                     return op1 <= op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional <=");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional <=", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -199,7 +360,10 @@ var Operacion = /** @class */ (function () {
                     return op1 == op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional ==");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional ==", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -209,7 +373,10 @@ var Operacion = /** @class */ (function () {
                     return op1 != op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando una suma");
+                    console.log("Error de tipos de datos no permitidos para la expresion relacional !=");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos para la expresion relacional !=", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -219,7 +386,10 @@ var Operacion = /** @class */ (function () {
                     return op1 && op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando un ANd");
+                    console.log("Error de tipos de datos no permitidos realizando un AND");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando un AND", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -229,7 +399,10 @@ var Operacion = /** @class */ (function () {
                     return op1 || op2;
                 }
                 else {
-                    console.log("Error de tipos de datos no permitidos realizando un ANd");
+                    console.log("Error de tipos de datos no permitidos realizando un OR");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando un OR", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -242,6 +415,9 @@ var Operacion = /** @class */ (function () {
                 }
                 else {
                     console.log("Error de tipos de datos no permitidos realizando una operación unaria");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando una operación unaria", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
@@ -252,6 +428,9 @@ var Operacion = /** @class */ (function () {
                 }
                 else {
                     console.log("Error de tipos de datos no permitidos realizando un not");
+                    var prueba = new Error("Semantico", "Error de tipos de datos no permitidos realizando un not", 1, 1);
+                    var re = ReporteErrores.getInstance();
+                    re.pushError(prueba);
                     return null;
                 }
             }
