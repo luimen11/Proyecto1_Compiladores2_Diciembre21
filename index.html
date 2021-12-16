@@ -12,6 +12,7 @@
 <link rel="stylesheet" href="./resources/css/isotope.css">
 <link rel="stylesheet" href="./resources/css/bootstrap.css">
 <link rel="stylesheet" href="./resources/css/main.css">
+<link rel="stylesheet" href="./chart/chart.css">
 <link href="https://fonts.googleapis.com/css?family=Slabo+27px&display=swap" rel="stylesheet">
 
 
@@ -65,7 +66,7 @@
                     <br>              
                     <input type="button" value="Interpretar"  onclick="ejecutar();" />
                     <input type="button" value="Traducir"  />
-                    <input type="button" value="AST"  />
+                    <input type="button" value="AST" onclick="graficar();"  />
                     <input type="button" value="Tabla de Simbolos"  />
                     <input type="button" value="Reporte Gramatical"  />
                     <input type="button" value="Errores" onclick="mostrarErrores();">
@@ -122,11 +123,16 @@
      <script src="./Expresiones/AccesoVariable.js"></script>
      <script src="./AST/Entorno.js"></script>
      <script src="./Gramatica/gramatica.js"></script>    
+     <script src="./Gramatica/astGrafica.js"></script> 
      <script src="./Error.js"></script>
      <script src="./ReporteErrores.js"></script>
     <script src="main.js"></script>  
-    
 
+     <!-- load the d3.js library -->
+     <script src="https://d3js.org/d3.v6.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.17/d3.min.js"></script>
+     <script src="./chart/chart.js"></script>
+    
     <script src="./resources/js/codemirror.js"></script>
     <script src="./resources/js/Jquery.js"></script>
     <script src="./resources/js/bootstrap.js"></script>
