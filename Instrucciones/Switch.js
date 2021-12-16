@@ -1,6 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.Switch = void 0;
+
 // print("hola mundo");
 var Switch = /** @class */ (function () {
     // meter listado de print print(a,b)
@@ -15,20 +16,46 @@ var Switch = /** @class */ (function () {
     };
     Switch.prototype.ejecutar = function (ent, arbol) {
         var condi = this.condicion.getValorImplicito(ent, arbol);
-        this.lista_cases.forEach(function (caso) {
+        var vieneBreak = false;
+        this.lista_cases.every(function (caso) {
             if (caso.Default) {
                 var entornoDefault_1 = new Entorno(ent);
-                caso.instrucciones.forEach(function (instruccion) {
+                caso.instrucciones.every(function (instruccion) {
                     instruccion.ejecutar(entornoDefault_1, arbol);
+                    if (instruccion.constructor.name.toString() == "Break") {
+                        vieneBreak = true;
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
                 });
-                return;
+                if (vieneBreak) {
+                    return false;
+                }
+                else {
+                    return true;
+                }
             }
             else {
                 if (condi == caso.condicion.getValorImplicito(ent, arbol)) {
                     var entornoDefault_2 = new Entorno(ent);
-                    caso.instrucciones.forEach(function (instruccion) {
+                    caso.instrucciones.every(function (instruccion) {
                         instruccion.ejecutar(entornoDefault_2, arbol);
+                        if (instruccion.constructor.name.toString() == "Break") {
+                            vieneBreak = true;
+                            return false;
+                        }
+                        else {
+                            return true;
+                        }
                     });
+                }
+                if (vieneBreak) {
+                    return false;
+                }
+                else {
+                    return true;
                 }
             }
         });

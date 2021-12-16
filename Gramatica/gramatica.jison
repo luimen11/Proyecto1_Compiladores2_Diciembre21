@@ -135,6 +135,7 @@ instruccion
     | funciones
     | cond_if                            { $$ = $1 }
     | cond_switch                        { $$ = $1 }
+    | loop_while                         { $$ = $1 }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
@@ -218,7 +219,8 @@ estructura_case : RCASE expresion ':' instrucciones_dentro          { $$ = new C
                 | RDEFAULT ':' instrucciones_dentro                 { $$ = new Case([],$3,@1.first_line, @1.first_column,true); }
                 ;
 
-loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}' ;
+loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}'   { $$ = new While($3,$6,@1.first_line, @1.first_colum); }
+                ;
 
 loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  ;
 
@@ -248,18 +250,18 @@ instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.pus
                      | instruccion_dentro                               { $$ = [$1]; }
                     ;
 
-instruccion_dentro      : declaracion
-                        | asignacion                    
-                        | impresion                                      { $$ = $1 }
+instruccion_dentro      : declaracion                                        { $$ = $1 }                     
+                        | asignacion                                         { $$ = $1 }
+                        | impresion                                          { $$ = $1 }
                         | llamada ';'
-                        | cond_if                                        { $$ = $1 } 
-                        | cond_switch                                    { $$ = $1 } 
+                        | cond_if                                            { $$ = $1 } 
+                        | cond_switch                                        { $$ = $1 } 
                         | loop_while
                         | loop_dowhile
                         | loop_for
                         | RRETURN ';'
                         | RRETURN expresion ';'
-                        | RBREAK ';'
+                        | RBREAK ';'                                         { $$ = new Break(@1.first_line, @1.first_column); }
                         
                         | expresion '++'';'
                         | expresion '--'';'

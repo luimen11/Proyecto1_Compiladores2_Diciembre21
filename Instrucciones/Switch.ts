@@ -5,6 +5,7 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 import { Case } from "../Instrucciones/Case";
+import { Break } from "./Break";
 
 // print("hola mundo");
 
@@ -29,25 +30,54 @@ export class Switch implements Instruccion{
 
     ejecutar(ent: Entorno, arbol: AST) {
         let condi = this.condicion.getValorImplicito(ent,arbol);
+        let vieneBreak = false;
 
-        this.lista_cases.forEach((caso) =>{
+        this.lista_cases.every((caso) =>{
 
             if(caso.Default){
                 const entornoDefault = new Entorno(ent);
                 
-                caso.instrucciones.forEach(( instruccion) =>{
+                caso.instrucciones.every(( instruccion) =>{
                     instruccion.ejecutar(entornoDefault, arbol);
+                    
+                    if (instruccion.constructor.name.toString() == "Break") {
+                        vieneBreak = true;
+                        return false;
+                    }else{
+                        return true;
+                    }
+                        
                 });
-                return;
+
+                if (vieneBreak) {
+                    return false;
+                }else{
+                    return true;
+                }
+                
 
             }else {
 
                 if(condi == caso.condicion.getValorImplicito(ent,arbol)){
                     const entornoDefault = new Entorno(ent);
                 
-                    caso.instrucciones.forEach(( instruccion) =>{
+                    caso.instrucciones.every(( instruccion) =>{
                         instruccion.ejecutar(entornoDefault, arbol);
+
+                        if (instruccion.constructor.name.toString() == "Break") {
+                            vieneBreak = true;
+                            return false;
+                        }else{
+                            return true;
+                        }
+
                     });
+                }
+
+                if (vieneBreak) {
+                    return false;
+                }else{
+                    return true;
                 }
 
             }
