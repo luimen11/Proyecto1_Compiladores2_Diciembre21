@@ -33,30 +33,28 @@ export class If implements Instruccion{
     ejecutar(ent: Entorno, arbol: AST) {
         //verificar que la exp sea booleana
         if(this.condicion.getValorImplicito(ent,arbol)){
+            console.log(this.lista_instrucciones_if.length)
             const entornoIf = new Entorno(ent);
             this.lista_instrucciones_if.forEach((instruccion) => {
                 instruccion.ejecutar(entornoIf, arbol);
             })
+            return;
+
         } else {
-             this.lista_instrucciones_if.forEach((elseif:any) => {
-                if(elseif.condicion.getValorImplicito(ent,arbol)){
-                    const entornoIf = new Entorno(ent);
-                    elseif.lista_instrucciones_if.forEach((instruccion:any) => {
-                        instruccion.ejecutar(entornoIf, arbol);
-                    })
-                    return;
-                }
-             })
-
-
+            
+            if(this.lista_else_if.length > 0){
+                const entornoElseIf = new Entorno(ent);
+                this.lista_else_if[0].ejecutar(entornoElseIf, arbol)
+            }
+   
             if(this.lista_instrucciones_else.length > 0){
             const entornoElse = new Entorno(ent);
-                this.lista_instrucciones_else.forEach((instruccion) => {
+                this.lista_instrucciones_else.forEach((instruccion:any) => {
                 instruccion.ejecutar(entornoElse, arbol);
              })
             }
         }
-        
+        return;
         
     }
 

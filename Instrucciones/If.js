@@ -18,21 +18,18 @@ var If = /** @class */ (function () {
     If.prototype.ejecutar = function (ent, arbol) {
         //verificar que la exp sea booleana
         if (this.condicion.getValorImplicito(ent, arbol)) {
+            console.log(this.lista_instrucciones_if.length);
             var entornoIf_1 = new Entorno(ent);
             this.lista_instrucciones_if.forEach(function (instruccion) {
                 instruccion.ejecutar(entornoIf_1, arbol);
             });
+            return;
         }
         else {
-            this.lista_instrucciones_if.forEach(function (elseif) {
-                if (elseif.condicion.getValorImplicito(ent, arbol)) {
-                    var entornoIf_2 = new Entorno(ent);
-                    elseif.lista_instrucciones_if.forEach(function (instruccion) {
-                        instruccion.ejecutar(entornoIf_2, arbol);
-                    });
-                    return;
-                }
-            });
+            if (this.lista_else_if.length > 0) {
+                var entornoElseIf = new Entorno(ent);
+                this.lista_else_if[0].ejecutar(entornoElseIf, arbol);
+            }
             if (this.lista_instrucciones_else.length > 0) {
                 var entornoElse_1 = new Entorno(ent);
                 this.lista_instrucciones_else.forEach(function (instruccion) {
@@ -40,6 +37,7 @@ var If = /** @class */ (function () {
                 });
             }
         }
+        return;
     };
     return If;
 }());

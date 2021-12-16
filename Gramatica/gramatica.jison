@@ -134,6 +134,7 @@ instruccion
     | impresion                          { $$ = $1 }
     | funciones
     | cond_if                            { $$ = $1 }
+    | cond_switch                        { $$ = $1 }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
@@ -194,27 +195,27 @@ nativas          : tipo '.' RPARSE '(' expresion ')'
                  | RTYPEOF '(' expresion ')'                 
 ;                 
                  
-cond_if         : RIF '(' expresion ')' bloque_instrucciones                                { $$ = new If($3, $5, [], @1.first_line, @1.first_column); }                 
-                | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                 
-                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     { $$ = new If($3, $5, $7, @1.first_line, @1.first_column); }
+cond_if         : RIF '(' expresion ')' bloque_instrucciones                                { $$ = new If($3, $5, [],[], @1.first_line, @1.first_column); }                 
+                | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                  { $$ = new If($3, $5, [],[$7], @1.first_line, @1.first_column); }
+                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     { $$ = new If($3, $5, $7,[], @1.first_line, @1.first_column); }
 ;
 
-bloque_instrucciones   : '{' instrucciones_dentro '}'                                         { $$ = $1 }
+bloque_instrucciones   : '{' instrucciones_dentro '}'                                         { $$ = $2 }
                         | declaracion
                         | asignacion
                         | impresion
                         | llamada ';'
                        ; 
 
-cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'
+cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'       { $$ = new Switch($3,$6,@1.first_line, @1.first_column); }
                 ;
 
-bloque_switch   : bloque_switch estructura_case
-                | estructura_case
+bloque_switch   : bloque_switch estructura_case                                     { $1.push($2); $$ = $1;}
+                | estructura_case                                                   { $$ = [$1]; }
                 ;
 
-estructura_case : RCASE expresion ':' instrucciones_dentro
-                | RDEFAULT expresion ':' instrucciones_dentro
+estructura_case : RCASE expresion ':' instrucciones_dentro          { $$ = new Case($2,$4,@1.first_line, @1.first_column); }
+                | RDEFAULT ':' instrucciones_dentro                 { $$ = new Case([],$3,@1.first_line, @1.first_column,true); }
                 ;
 
 loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}' ;
@@ -252,7 +253,7 @@ instruccion_dentro      : declaracion
                         | impresion                                      { $$ = $1 }
                         | llamada ';'
                         | cond_if                                        { $$ = $1 } 
-                        | cond_switch
+                        | cond_switch                                    { $$ = $1 } 
                         | loop_while
                         | loop_dowhile
                         | loop_for
