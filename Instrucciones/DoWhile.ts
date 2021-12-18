@@ -5,7 +5,7 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 
-export class While implements Instruccion{
+export class DoWhile implements Instruccion{
     linea: number;
     columna: number;
     public condicion:Expresion;
@@ -27,13 +27,14 @@ export class While implements Instruccion{
         const entornoWhile = new Entorno(ent);
         //verificar que la exp sea booleana
         
-        do{  
+        while(this.condicion.getValorImplicito(ent,arbol)){
+            
             this.lista_instrucciones.forEach((instruccion) => {
                 instruccion.ejecutar(entornoWhile, arbol);
                 
             })
             
-        }while(this.condicion.getValorImplicito(ent,arbol)) 
+        } 
         
     }
 

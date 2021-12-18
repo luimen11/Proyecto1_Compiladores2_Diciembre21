@@ -5,14 +5,18 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 
-export class While implements Instruccion{
+export class Funcion implements Instruccion{
     linea: number;
     columna: number;
-    public condicion:Expresion;
+    public id:string;
+    public tipo:Tipo;
+    public lista_parametros: Array<Simbolo>;
     public lista_instrucciones: Array<Instruccion>;
     
-    constructor(condicion:Expresion,lista_instrucciones:Array<Instruccion>, linea:number, columna:number ){
-        this.condicion = condicion;
+    constructor(tipo:Tipo,id:string,lista_parametros: Array<Simbolo>,lista_instrucciones:Array<Instruccion>, linea:number, columna:number ){
+        this.tipo = tipo;
+        this.id = id;
+        this.lista_parametros = lista_parametros;
         this.lista_instrucciones = lista_instrucciones;
         this.linea = linea;
         this.columna = columna;
@@ -24,19 +28,14 @@ export class While implements Instruccion{
 
     ejecutar(ent: Entorno, arbol: AST) {
         
-        const entornoWhile = new Entorno(ent);
-        //verificar que la exp sea booleana
-        
-        do{  
-            this.lista_instrucciones.forEach((instruccion) => {
-                instruccion.ejecutar(entornoWhile, arbol);
-                
-            })
-            
-        }while(this.condicion.getValorImplicito(ent,arbol)) 
-        
+        const entornoFuncion = new Entorno(ent);
+
+        this.lista_instrucciones.forEach((instruccion) => {
+            instruccion.ejecutar(entornoFuncion, arbol);    
+        });
+   
     }
 
-   
+
 
 }

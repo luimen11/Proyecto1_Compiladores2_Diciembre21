@@ -5,8 +5,6 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 
-// print("hola mundo");
-
 export class Declaracion implements Instruccion{
     linea: number;
     columna: number;
@@ -14,7 +12,6 @@ export class Declaracion implements Instruccion{
     public identificadores: Array<string>;
     public tipo:Tipo;
 
-    // meter listado de print print(a,b)
     constructor(identificadores:Array<string>, tipo:Tipo, linea:number, columna:number,exp:any= null ){
         this.identificadores = identificadores;
         this.tipo = tipo;

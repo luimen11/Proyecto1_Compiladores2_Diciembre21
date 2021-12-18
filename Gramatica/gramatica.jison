@@ -120,7 +120,7 @@
 %% /* Definición de la gramática */
 
 inicio
-    : instrucciones EOF                 {return new AST($1);}       
+    : instrucciones EOF                 {return new AST($1,$1);}       
 ;
 
 instrucciones
@@ -132,10 +132,11 @@ instruccion
     : declaracion                        { $$ = $1 }
     | asignacion                         { $$ = $1 }
     | impresion                          { $$ = $1 }
-    | funciones
+    | funciones                          { $$ = $1 }
     | cond_if                            { $$ = $1 }
     | cond_switch                        { $$ = $1 }
     | loop_while                         { $$ = $1 }
+    | loop_dowhile                       { $$ = $1 }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
@@ -144,12 +145,12 @@ declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([
             | tipo '[' ']' id '=' cuerpo_array ';'
 ;
 
-lista_atributos : lista_atributos ',' atributo
-                | atributo
+lista_atributos : lista_atributos ',' atributo          { $1.push($3); $$ = $1; }
+                | atributo                              { $$ = [$1] }
                 ;
 
-atributo : tipo ID
-         | ID ID
+atributo : tipo ID                                  { $$ = new Simbolo($1, $2, @1.first_line, @1.first_column); } 
+         | ID ID                        
          ;
 
 lista_declaracion : lista_declaracion ',' ID             { $1.push($3); $$ = $1; }
@@ -222,7 +223,8 @@ estructura_case : RCASE expresion ':' instrucciones_dentro          { $$ = new C
 loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}'   { $$ = new While($3,$6,@1.first_line, @1.first_colum); }
                 ;
 
-loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  ;
+loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  { $$ = new DoWhile($7,$3,@1.first_line, @1.first_colum); }
+                ;
 
 loop_for        : RFOR '(' declarar_asignar ';' expresion ';'  declarar_asignar ')' '{' instrucciones_dentro '}' ;
 
@@ -231,8 +233,8 @@ declarar_asignar: tipo ID '=' expresion
                 | expresion
                 ;
 
-funciones       : ID ID '(' ')' '{' instrucciones_dentro '}' 
-                | ID ID '(' lista_atributos')' '{'instrucciones_dentro '}' 
+funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}'                         { $$ = new Funcion($1,$2,[],$6,@1.first_line, @1.first_column); }
+                | tipo ID '(' lista_atributos')' '{'instrucciones_dentro '}'           { $$ = new Funcion($1,$2,$4,$7,@1.first_line, @1.first_column); }
                 ;
 
 
@@ -256,11 +258,11 @@ instruccion_dentro      : declaracion                                        { $
                         | llamada ';'
                         | cond_if                                            { $$ = $1 } 
                         | cond_switch                                        { $$ = $1 } 
-                        | loop_while
-                        | loop_dowhile
+                        | loop_while                                         { $$ = $1 }
+                        | loop_dowhile                                       { $$ = $1 }
                         | loop_for
-                        | RRETURN ';'
-                        | RRETURN expresion ';'
+                        | RRETURN ';'                                        { $$ = new Return([],@1.first_line, @1.first_column); }
+                        | RRETURN expresion ';'                              { $$ = new Return($2,@1.first_line, @1.first_column); }
                         | RBREAK ';'                                         { $$ = new Break(@1.first_line, @1.first_column); }
                         
                         | expresion '++'';'
