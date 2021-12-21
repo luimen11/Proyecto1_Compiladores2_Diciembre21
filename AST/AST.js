@@ -17,6 +17,16 @@ var AST = /** @class */ (function () {
         }
         return null;
     };
+    AST.prototype.retonarFuncion = function (id) {
+        for (var i = 0; i < this.funciones.length; i++) {
+            if (this.funciones[i].constructor.name.toString() == "Funcion") {
+                if (this.funciones[i].id == id) {
+                    return i;
+                }
+            }
+        }
+        return null;
+    };
     return AST;
 }());
 exports.AST = AST;

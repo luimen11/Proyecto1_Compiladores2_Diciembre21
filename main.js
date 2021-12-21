@@ -5,6 +5,14 @@ function ejecutar(){
     const entornoGlobal = new Entorno(null);
 
     salida.setValue('');
+
+    ast.instrucciones.forEach((element) => {
+        
+        if(element.constructor.name.toString() == "Declaracion"){
+            element.ejecutar(entornoGlobal,ast);
+        }
+    })
+
     const noMain = ast.ejecutarMain();
 
     if(noMain == null){
@@ -13,10 +21,7 @@ function ejecutar(){
         ast.funciones[noMain].ejecutar(entornoGlobal,ast);
     }
 
-    //ast.instrucciones.forEach((element) => {
-    //    element.ejecutar(entornoGlobal,ast);
-        
-    //})
+    
 }
 
 function mostrarErrores(){

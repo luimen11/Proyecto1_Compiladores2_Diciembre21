@@ -4,7 +4,7 @@ exports.Print = void 0;
 // print("hola mundo");
 class Print {
     // meter listado de print print(a,b)
-    constructor(exp, linea, columna, saltoLinea = false) {
+    constructor(exp, linea, columna, saltoLinea) {
 														  
         this.expresion = exp;
         this.linea = linea;
@@ -15,21 +15,27 @@ class Print {
         throw new Error("Method not implemented.");
     }
     ejecutar(ent, arbol) {
-        const valor = this.expresion.getValorImplicito(ent, arbol);        
+
+        let cadena= "";
+        this.expresion.forEach((instruccion) => {
+            const valor = instruccion.getValorImplicito(ent, arbol);    
+            cadena += valor + ' ';
+        });
+
         let inputValue =salida.getValue();
         let actual;
         //actual = document.getElementById("txtSalida").value;
-        if (valor != null) {
-            if (!this.salto) {
+        if (cadena != null) {
+            if (this.salto) {
                 //process.stdout.write('> ${valor}');
-                actual = inputValue + '\n' + valor;
+                actual = inputValue + '\n' + cadena;
                 salida.setValue(actual)
-                console.log('>', valor);
+                console.log('>', cadena);
             }
             else{
-                actual = inputValue + ' ' + valor;
-                salida.setValue() = actual;
-                console.log('>', valor);
+                actual = inputValue + ' ' + cadena;
+                salida.setValue(actual);
+                console.log('>', cadena);
             }
         }
         else {
