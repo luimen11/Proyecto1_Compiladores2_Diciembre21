@@ -176,20 +176,20 @@ tipo_primitivo :    RINT            { $$ =  Tipo.INT;}
                |    RVOID           { $$ =  Tipo.VOID;} 
 ;                    
 
-impresion       : RPRINTLN '(' lista_impresion ')' ';'
-                | RPRINT '(' expresion ')' ';'            { $$ = new Print($3, @1.first_line, @1.first_column); }
+impresion       : RPRINTLN '(' lista_impresion ')' ';'          { $$ = new Print($3, @1.first_line, @1.first_column,true); }
+                | RPRINT '(' lista_impresion ')' ';'            { $$ = new Print($3, @1.first_line, @1.first_column,false); }
 ;
 
-lista_impresion : lista_impresion ',' expresion                 { $1.push($2); $$ = $1;}
+lista_impresion : lista_impresion ',' expresion                 { $1.push($3); $$ = $1;}
                 | expresion                                     { $$ = [$1]; }
 ;
 
-llamada         : ID '(' lista_parametros ')'
-                | ID '(' ')' 
+llamada         : ID '(' lista_parametros ')'                   {$$ = new Llamada($1,$3, @1.first_line, @1.first_column); }
+                | ID '(' ')'                                    {$$ = new Llamada($1,[], @1.first_line, @1.first_column); }
 ;
 
-lista_parametros : lista_parametros ',' expresion
-                 | expresion
+lista_parametros : lista_parametros ',' expresion               { $1.push($3); $$ = $1;}
+                 | expresion                                    { $$ = [$1]; }
 ;                 
 
 nativas          : tipo '.' RPARSE '(' expresion ')'
@@ -261,7 +261,7 @@ instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.pus
 instruccion_dentro      : declaracion                                        { $$ = $1 }                     
                         | asignacion                                         { $$ = $1 }
                         | impresion                                          { $$ = $1 }
-                        | llamada ';'
+                        | llamada ';'                                        { $$ = $1 }
                         | cond_if                                            { $$ = $1 } 
                         | cond_switch                                        { $$ = $1 } 
                         | loop_while                                         { $$ = $1 }
