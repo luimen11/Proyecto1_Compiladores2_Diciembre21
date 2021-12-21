@@ -180,16 +180,16 @@ impresion       : RPRINTLN '(' lista_impresion ')' ';'          { $$ = new Print
                 | RPRINT '(' lista_impresion ')' ';'            { $$ = new Print($3, @1.first_line, @1.first_column,false); }
 ;
 
-lista_impresion : lista_impresion ',' expresion                 { $1.push($3); $$ = $1;}
+lista_impresion : lista_impresion ',' expresion                 { $1.push($2); $$ = $1;}
                 | expresion                                     { $$ = [$1]; }
 ;
 
-llamada         : ID '(' lista_parametros ')'                   {$$ = new Llamada($1,$3, @1.first_line, @1.first_column); }
-                | ID '(' ')'                                    {$$ = new Llamada($1,[], @1.first_line, @1.first_column); }
+llamada         : ID '(' lista_parametros ')'
+                | ID '(' ')' 
 ;
 
-lista_parametros : lista_parametros ',' expresion               { $1.push($3); $$ = $1;}
-                 | expresion                                    { $$ = [$1]; }
+lista_parametros : lista_parametros ',' expresion
+                 | expresion
 ;                 
 
 nativas          : tipo '.' RPARSE '(' expresion ')'
@@ -261,7 +261,7 @@ instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.pus
 instruccion_dentro      : declaracion                                        { $$ = $1 }                     
                         | asignacion                                         { $$ = $1 }
                         | impresion                                          { $$ = $1 }
-                        | llamada ';'                                        { $$ = $1 }
+                        | llamada ';'
                         | cond_if                                            { $$ = $1 } 
                         | cond_switch                                        { $$ = $1 } 
                         | loop_while                                         { $$ = $1 }
@@ -270,7 +270,7 @@ instruccion_dentro      : declaracion                                        { $
                         | RRETURN ';'                                        { $$ = new Return([],@1.first_line, @1.first_column); }
                         | RRETURN expresion ';'                              { $$ = new Return($2,@1.first_line, @1.first_column); }
                         | RRETURN ';'
-                        | func_graficar          { $$ = $1; }
+                        | func_graficar                                        { $$ = $1; }
                         | RRETURN expresion ';'
                         | RBREAK ';'                                         { $$ = new Break(@1.first_line, @1.first_column); }
                         

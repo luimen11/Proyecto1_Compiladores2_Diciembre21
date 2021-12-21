@@ -90,7 +90,7 @@ function mostrarTablaSimbolos(){
                 <td>${dic[key].indentificador}</td>                
                 <td>${dic[key].valor}</td> 
                 <td>${getTipo(dic[key].tipo)}</td> 
-                <td></td> 
+                <td>global</td> 
                 </tr>`
         }
     }

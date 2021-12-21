@@ -45,6 +45,7 @@
 "parse"             return 'RPARSE';
 "break"             return 'RBREAK';
 "continue"          return 'RCONTINUE';
+"graficar_ts"       return 'RGRAFICAR';
 
 
 ":"                 return ':';
@@ -134,7 +135,10 @@ instruccion
     | impresion                     { $$ = { node: newNode(yy, yystate, $1.node) }}                          
     | funciones                     { $$ = { node: newNode(yy, yystate, $1.node) }}                          
     | cond_if                       { $$ = { node: newNode(yy, yystate, $1.node) }}                          
-    | cond_switch                   { $$ = { node: newNode(yy, yystate, $1.node) }}                          
+    | cond_switch                   { $$ = { node: newNode(yy, yystate, $1.node) }}   
+    | loop_while                    { $$ = { node: newNode(yy, yystate, $1.node) }}   
+    | loop_dowhile                  { $$ = { node: newNode(yy, yystate, $1.node) }}   
+    | func_graficar                 { $$ = { node: newNode(yy, yystate, $1.node) }}   
 ;
 
 declaracion : tipo ID '=' expresion ';'             { $$ = { node: newNode(yy, yystate, $1.node, $2, $4.node) }}
@@ -173,7 +177,7 @@ tipo_primitivo :    RINT            { $$ = { node: newNode(yy, yystate, $1) }}
 ;                    
 
 impresion       : RPRINTLN '(' lista_impresion ')' ';'  { $$ = { node: newNode(yy, yystate, $1, $3.node) }}           
-                | RPRINT '(' expresion ')' ';'          { $$ = { node: newNode(yy, yystate, $1, $3.node) }}           
+                | RPRINT '(' lista_impresion ')' ';'    { $$ = { node: newNode(yy, yystate, $1, $3.node) }}           
 ;
 
 lista_impresion : lista_impresion ',' expresion         { $$ = { node: newNode(yy, yystate, $1.node, $3.node) }}
@@ -200,7 +204,7 @@ cond_if         : RIF '(' expresion ')' bloque_instrucciones                    
                 | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     { $$ = { node: newNode(yy, yystate, $1, $3.node, $5.node, $6, $7.node) }}    
 ;
 
-bloque_instrucciones   : '{' instrucciones_dentro '}'    { $$ = { node: newNode(yy, yystate, $1.node) }}                                      
+bloque_instrucciones   : '{' instrucciones_dentro '}'    { $$ = { node: newNode(yy, yystate, $2.node) }}                                      
                         | declaracion                    { $$ = { node: newNode(yy, yystate, $1.node) }} 
                         | asignacion                     { $$ = { node: newNode(yy, yystate, $1.node) }} 
                         | impresion                      { $$ = { node: newNode(yy, yystate, $1.node) }} 
@@ -229,8 +233,8 @@ declarar_asignar: tipo ID '=' expresion  { $$ = { node: newNode(yy, yystate, $1.
                 | expresion              { $$ = { node: newNode(yy, yystate, $1.node) }} 
                 ;
 
-funciones       : ID ID '(' ')' '{' instrucciones_dentro '}'                { $$ = { node: newNode(yy, yystate, $1, $2, $6.node) }} 
-                | ID ID '(' lista_atributos')' '{'instrucciones_dentro '}'  { $$ = { node: newNode(yy, yystate, $1, $2, $4.node, $7.node) }} 
+funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}'                { $$ = { node: newNode(yy, yystate, $1.node, $2, $6.node) }} 
+                | tipo ID '(' lista_atributos')' '{'instrucciones_dentro '}'  { $$ = { node: newNode(yy, yystate, $1.node, $2, $4.node, $7.node) }} 
                 ;
 
 
@@ -241,7 +245,10 @@ tipo_func_arit       : RPOW             { $$ = { node: newNode(yy, yystate, $1) 
                      | RTAN             { $$ = { node: newNode(yy, yystate, $1) }}                
 ;                
 
-func_arit          : tipo_func_arit '(' expresion ')'           { $$ = { node: newNode(yy, yystate, $1.node, $2.node) }}                
+func_arit          : tipo_func_arit '(' expresion ')'           { $$ = { node: newNode(yy, yystate, $1.node, $3.node) }}                
+;
+
+func_graficar       : RGRAFICAR '(' ')' ';'                     { $$ = { node: newNode(yy, yystate, $1) }}
 ;
 
 instrucciones_dentro : instrucciones_dentro instruccion_dentro      { $$ = { node: newNode(yy, yystate, $1.node, $2.node) }}                    
@@ -259,6 +266,7 @@ instruccion_dentro      : declaracion               { $$ = { node: newNode(yy, y
                         | loop_for                  { $$ = { node: newNode(yy, yystate, $1.node) }}                
                         | RRETURN ';'               { $$ = { node: newNode(yy, yystate, $1) }}                
                         | RRETURN expresion ';'     { $$ = { node: newNode(yy, yystate, $1, $2.node) }}                
+                        | func_graficar             { $$ = { node: newNode(yy, yystate, $1.node) }}                
                         | RBREAK ';'                { $$ = { node: newNode(yy, yystate, $1) }}                
                         
                         | expresion '++'';'         { $$ = { node: newNode(yy, yystate, $1.node, $2) }}                
