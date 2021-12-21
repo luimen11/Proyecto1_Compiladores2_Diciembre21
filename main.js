@@ -1,9 +1,13 @@
+var ast = null;
+var entornoGlobal=null;
+
 function ejecutar(){
     
+    document.getElementById("console").value = "";
     const content = entrada.getValue();
-    const ast = gramatica.parse(content);    
-    const entornoGlobal = new Entorno(null);
-
+    ast = gramatica.parse(content);    
+    entornoGlobal = new Entorno(null);
+    
     salida.setValue('');
     const noMain = ast.ejecutarMain();
 
@@ -30,7 +34,7 @@ function mostrarErrores(){
     <tr bgcolor=darkred>
     <th style="color:white">Tipo</th>
     <th style="color:white"> Descripcion</th>
-    <th style="color:white">Fila</th>
+    <th style="color:white">Linea</th>
     <th style="color:white">Columna</th>
     </tr>
     </thead>
@@ -55,6 +59,67 @@ function mostrarErrores(){
     document.getElementById('errores').innerHTML = html;
     
 }
+
+function mostrarTablaSimbolos(){
+
+    document.getElementById('simbolos').style.display = "block";
+    let html = `<h4>Tabla de simbolos</h4>
+    <table border=1 align="center" id="tablaSimbolos" style="width:100%">
+    <thead>
+    <tr bgcolor=darkred>
+    <th style="color:white">ID</th>
+    <th style="color:white"> Valor</th>
+    <th style="color:white">Tipo</th>
+    <th style="color:white">Entorno</th>
+    </tr>
+    </thead>
+    <tbody>
+    `;
+    var dic = entornoGlobal.tabla    
+    console.log(dic);
+
+    for (var key in dic) {        
+        if (dic.hasOwnProperty(key)) {           
+            console.log(key, dic[key]);
+            html += `<tr>
+                <td>${dic[key].indentificador}</td>                
+                <td>${dic[key].valor}</td> 
+                <td>${getTipo(dic[key].tipo)}</td> 
+                <td></td> 
+                </tr>`
+        }
+    }
+    html += `</tbody>
+    </table> </br></br><hr>`;
+
+    document.getElementById('simbolos').innerHTML = html;    
+}
+
+
+function getTipo(tipo){
+    if(tipo === 0)
+        return "String";
+    else if(tipo === 1)
+        return  "Int";
+    else if(tipo === 2)
+        return  "Double";
+    else if(tipo === 3)
+        return  "Bool";
+    else if(tipo === 4)
+        return  "Char";
+    else if(tipo === 5)
+        return  "Void";
+    else if(tipo === 6)
+        return  "Struct";
+    else if(tipo === 7)
+        return  "Null";
+    else if(tipo === 8)
+        return  "Atributo";
+    else if(tipo === 9)
+        return  "Array";
+}
+
+
 
 
 function graficar(){

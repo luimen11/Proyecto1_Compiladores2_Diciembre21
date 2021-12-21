@@ -67,8 +67,7 @@
                     <input type="button" value="Interpretar"  onclick="ejecutar();" />
                     <input type="button" value="Traducir"  />
                     <input type="button" value="AST" onclick="graficar();"  />
-                    <input type="button" value="Tabla de Simbolos"  />
-                    <input type="button" value="Reporte Gramatical"  />
+                    <input type="button" value="Tabla de Simbolos" onclick="mostrarTablaSimbolos()" />                    
                     <input type="button" value="Errores" onclick="mostrarErrores();">
                     
                     <br>
@@ -77,17 +76,15 @@
         </tr>
 
         <tr>
-            <td align="center" colspan="3">  
+            <td align="center" colspan="3">
                 <!-- AREA DE TEXTO PARA RESULTADO -->                
                 <div id="ide3">                    
                     <textarea id="console"  name="console" style="resize:none; overflow-y: scroll; "   rows="10" cols="140"></textarea>
-                </div> 
+                </div>
                 <hr>
-                <br> 
+                <br>
             </td>            
-        </tr>
-
-        
+        </tr>        
     </table> 
     
     <div id="errores" style="display:none">
@@ -98,6 +95,18 @@
                 <th>Descripcion</th>
                 <th>Linea</th>
                 <th>Columna</th>
+            </tr>
+        </table>
+    </div>
+
+    <div id="simbolos" style="display:none">
+        <h2>Tabla de simbolos</h2>
+        <table id="tablaSimbolos" align="center" style="width:100%">
+            <tr>                
+                <th>ID</th>
+                <th>Valor</th>
+                <th>Tipo</th>
+                <th>Entorno</th>
             </tr>
         </table>
     </div>
@@ -124,12 +133,13 @@
      <script src="./Expresiones/Operacion.js"></script>     
      <script src="./Expresiones/Primitivo.js"></script>
      <script src="./Expresiones/AccesoVariable.js"></script>
+     <script src="./GraficarTS.js"></script>
      <script src="./AST/Entorno.js"></script>
      <script src="./Gramatica/gramatica.js"></script>    
      <script src="./Gramatica/astGrafica.js"></script> 
      <script src="./Error.js"></script>
      <script src="./ReporteErrores.js"></script>
-    <script src="main.js"></script>  
+     <script src="main.js"></script>  
 
      <!-- load the d3.js library -->
      <script src="https://d3js.org/d3.v6.min.js"></script>

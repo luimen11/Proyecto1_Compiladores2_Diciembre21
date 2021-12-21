@@ -45,6 +45,7 @@
 "parse"             return 'RPARSE';
 "break"             return 'RBREAK';
 "continue"          return 'RCONTINUE';
+"graficar_ts"       return 'RGRAFICAR';
 
 
 ":"                 return ':';
@@ -137,6 +138,7 @@ instruccion
     | cond_switch                        { $$ = $1 }
     | loop_while                         { $$ = $1 }
     | loop_dowhile                       { $$ = $1 }
+    | func_graficar                      { $$ = $1; }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
@@ -248,6 +250,10 @@ tipo_func_arit       : RPOW
 func_arit          : tipo_func_arit '(' expresion ')'
 ;
 
+func_graficar
+    : RGRAFICAR '(' ')' ';' { $$ = new GraficarTS() }
+;
+
 instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.push($2); $$ = $1;}
                      | instruccion_dentro                               { $$ = [$1]; }
                     ;
@@ -263,6 +269,9 @@ instruccion_dentro      : declaracion                                        { $
                         | loop_for
                         | RRETURN ';'                                        { $$ = new Return([],@1.first_line, @1.first_column); }
                         | RRETURN expresion ';'                              { $$ = new Return($2,@1.first_line, @1.first_column); }
+                        | RRETURN ';'
+                        | func_graficar          { $$ = $1; }
+                        | RRETURN expresion ';'
                         | RBREAK ';'                                         { $$ = new Break(@1.first_line, @1.first_column); }
                         
                         | expresion '++'';'
