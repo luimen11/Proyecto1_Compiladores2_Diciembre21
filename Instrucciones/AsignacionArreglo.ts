@@ -5,21 +5,20 @@ import { Tipo } from "../AST/Tipo";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 
-// print("hola mundo");
-
-export class Asignacion implements Instruccion{
+export class AsignacionArreglo implements Instruccion{
     linea: number;
     columna: number;
+    public indice:Expresion;
     public expresion:Expresion;
     public identificador: string;
     
-
-    // meter listado de print print(a,b)
-    constructor(identificador:string, exp:Expresion, linea:number, columna:number ){
+    constructor(identificador:string, indice:Expresion, exp:Expresion, linea:number, columna:number ){
         this.identificador = identificador;
+        this.indice = indice;
+        this.expresion = exp;
         this.linea = linea;
         this.columna = columna;
-        this.expresion = exp;
+        
     }
 
     traducir(ent: Entorno, arbol: AST) {
@@ -30,15 +29,14 @@ export class Asignacion implements Instruccion{
         
             if(ent.existe(this.identificador)){
                 const simbolo:Simbolo = ent.getSimbolo(this.identificador);
-                let condicion1 = simbolo.getTipo(ent, arbol);
-                let condicion2 = this.expresion.getTipo(ent,arbol);
-                if(condicion1 === condicion2 || (condicion1 == 1 && condicion2 == 2) || (condicion1 == 2 && condicion2 == 1)){
-                    const valor = this.expresion.getValorImplicito(ent,arbol);
-                    simbolo.valor  = valor;
-                    ent.reemplazar(this.identificador, simbolo);
-            }   else {
-                console.error("error semantico, no valor de tipo difente al declarado");           
-                }
+                const numero = this.indice.getValorImplicito(ent,arbol);
+
+                const valor = this.expresion.getValorImplicito(ent,arbol);
+                            
+                simbolo.valor[numero]  = valor;
+                ent.reemplazar(this.identificador, simbolo);
+
+                
             } else {
                 console.error("error semantico no existe variable", this.linea , "columna" , this.columna);  
             }

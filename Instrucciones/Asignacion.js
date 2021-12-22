@@ -16,13 +16,16 @@ var Asignacion = /** @class */ (function () {
     Asignacion.prototype.ejecutar = function (ent, arbol) {
         if (ent.existe(this.identificador)) {
             var simbolo = ent.getSimbolo(this.identificador);
-            if (simbolo.getTipo(ent, arbol) === this.expresion.getTipo(ent, arbol)) {
+            //console.log("simbolo",simbolo.getTipo(ent, arbol), "expresion",this.expresion.getTipo(ent, arbol))
+                let condicion1 = simbolo.getTipo(ent, arbol);
+                let condicion2 = this.expresion.getTipo(ent,arbol);
+                if(condicion1 === condicion2 || (condicion1 == 1 && condicion2 == 2) || (condicion1 == 2 && condicion2 == 1)){
                 var valor = this.expresion.getValorImplicito(ent, arbol);
                 simbolo.valor = valor;
                 ent.reemplazar(this.identificador, simbolo);
             }
             else {
-                console.error("error semantico, no valor de tipo difente al declarado");
+                console.error("error semantico, no valor de tipo difente al declarado",this.linea, "columna", this.columna);
             }
         }
         else {

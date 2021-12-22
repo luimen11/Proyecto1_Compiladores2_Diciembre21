@@ -2,10 +2,11 @@
 exports.__esModule = true;
 exports.Primitivo = void 0;
 var Primitivo = /** @class */ (function () {
-    function Primitivo(valor, linea, columna) {
+    function Primitivo(valor, linea, columna,entero) {
         this.linea = linea;
         this.columna = columna;
         this.valor = valor;
+        this.entero = entero;
     }
     Primitivo.prototype.traducir = function (ent, arbol) {
         throw new Error("Method not implemented.");
@@ -19,7 +20,7 @@ var Primitivo = /** @class */ (function () {
             return Tipo.STRING;
         }
         else if (typeof (valor) === 'number') {
-            if (this.isInt(Number(valor))) {
+            if (this.entero) {
                 return Tipo.INT;
             }
             return Tipo.DOUBLE;

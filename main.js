@@ -12,7 +12,7 @@ function ejecutar(){
 
     ast.instrucciones.forEach((element) => {
         
-        if(element.constructor.name.toString() == "Declaracion"){
+        if(element.constructor.name.toString() == "Declaracion" || element.constructor.name.toString() == "DeclaracionArreglo"){
             element.ejecutar(entornoGlobal,ast);
         }
     })

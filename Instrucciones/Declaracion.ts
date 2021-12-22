@@ -26,9 +26,11 @@ export class Declaracion implements Instruccion{
 
     ejecutar(ent: Entorno, arbol: AST) {
         this.identificadores.forEach((id:string)=>{
-            if(!ent.existe(id)){
+            if(!ent.existeEnActual(id)){
                 if(this.expresion !== null){
-                    if(this.tipo === this.expresion.getTipo(ent,arbol)){
+                    let condicion1 = this.tipo;
+                    let condicion2 = this.expresion.getTipo(ent,arbol);
+                if(condicion1 === condicion2 || (condicion1 == 1 && condicion2 == 2) || (condicion1 == 2 && condicion2 == 1)){
                             const valor = this.expresion.getValorImplicito(ent,arbol);
                             const simbolo:Simbolo = new Simbolo(this.tipo,id, this.linea,this.columna,valor);
                             ent.agregar(id, simbolo);

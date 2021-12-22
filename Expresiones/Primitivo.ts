@@ -7,11 +7,13 @@ export class Primitivo implements Expresion {
     linea: number;
     columna: number;
     valor: any;
+    entero: boolean;
 
-    constructor(valor:any, linea:number, columna:number){
+    constructor(valor:any, linea:number, columna:number,entero:boolean){
         this.linea = linea;
         this.columna = columna;
         this.valor = valor;
+        this.entero = entero;
     }
     
     traducir(ent: Entorno, arbol: AST) {
@@ -30,7 +32,7 @@ export class Primitivo implements Expresion {
         }
         else if (typeof(valor) === 'number')
         {
-            if(this.isInt(Number(valor))){
+            if(this.entero){
                 return Tipo.INT;
             }
            return Tipo.DOUBLE;

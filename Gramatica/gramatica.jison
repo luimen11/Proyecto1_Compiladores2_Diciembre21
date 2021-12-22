@@ -138,13 +138,13 @@ instruccion
     | cond_switch                        { $$ = $1 }
     | loop_while                         { $$ = $1 }
     | loop_dowhile                       { $$ = $1 }
-    | func_graficar                      { $$ = $1; }
+    | func_graficar                      { $$ = $1 }
 ;
 
 declaracion : tipo ID '=' expresion ';'                 { $$ = new Declaracion([$2],$1, @1.first_line, @1.first_column,$4); }
             | tipo lista_declaracion ';'                { $$ = new Declaracion($2, $1, @1.first_line, @1.first_column); } 
             | RSTRUCT ID '{' lista_atributos'}' ';'
-            | tipo '[' ']' id '=' cuerpo_array ';'
+            | tipo '[' ']' ID '=' cuerpo_array ';'      { $$ = new DeclaracionArreglo($4, $1, @1.first_line, @1.first_column,$6); } 
 ;
 
 lista_atributos : lista_atributos ',' atributo          { $1.push($3); $$ = $1; }
@@ -159,9 +159,11 @@ lista_declaracion : lista_declaracion ',' ID             { $1.push($3); $$ = $1;
                   | ID                                   { $$ = [$1] } 
                 ;
 
-cuerpo_array        : '[' lista_parametros']' ;
+cuerpo_array        : '[' lista_parametros']'           { $$ = $2 }
+                    ;
 
 asignacion : ID '=' expresion ';'                           { $$ = new Asignacion($1, $3, @1.first_line, @1.first_column); } 
+           | ID '[' expresion ']' '=' expresion ';'         { $$ = new AsignacionArreglo($1, $3,$6, @1.first_line, @1.first_column); } 
            | ID ID '=' ID '(' lista_parametros ')' ';'
            ;
 
@@ -180,16 +182,16 @@ impresion       : RPRINTLN '(' lista_impresion ')' ';'          { $$ = new Print
                 | RPRINT '(' lista_impresion ')' ';'            { $$ = new Print($3, @1.first_line, @1.first_column,false); }
 ;
 
-lista_impresion : lista_impresion ',' expresion                 { $1.push($2); $$ = $1;}
+lista_impresion : lista_impresion ',' expresion                 { $1.push($3); $$ = $1;}
                 | expresion                                     { $$ = [$1]; }
 ;
 
-llamada         : ID '(' lista_parametros ')'
-                | ID '(' ')' 
+llamada         : ID '(' lista_parametros ')'                   {$$ = new Llamada($1,$3, @1.first_line, @1.first_column); }
+                | ID '(' ')'                                    {$$ = new Llamada($1,[], @1.first_line, @1.first_column); }
 ;
 
-lista_parametros : lista_parametros ',' expresion
-                 | expresion
+lista_parametros : lista_parametros ',' expresion               { $1.push($3); $$ = $1;}
+                 | expresion                                    { $$ = [$1]; }
 ;                 
 
 nativas          : tipo '.' RPARSE '(' expresion ')'
@@ -261,7 +263,7 @@ instrucciones_dentro : instrucciones_dentro instruccion_dentro          { $1.pus
 instruccion_dentro      : declaracion                                        { $$ = $1 }                     
                         | asignacion                                         { $$ = $1 }
                         | impresion                                          { $$ = $1 }
-                        | llamada ';'
+                        | llamada ';'                                        { $$ = $1 }
                         | cond_if                                            { $$ = $1 } 
                         | cond_switch                                        { $$ = $1 } 
                         | loop_while                                         { $$ = $1 }
@@ -269,9 +271,7 @@ instruccion_dentro      : declaracion                                        { $
                         | loop_for
                         | RRETURN ';'                                        { $$ = new Return([],@1.first_line, @1.first_column); }
                         | RRETURN expresion ';'                              { $$ = new Return($2,@1.first_line, @1.first_column); }
-                        | RRETURN ';'
-                        | func_graficar                                        { $$ = $1; }
-                        | RRETURN expresion ';'
+                        | func_graficar                                      { $$ = $1; }
                         | RBREAK ';'                                         { $$ = new Break(@1.first_line, @1.first_column); }
                         
                         | expresion '++'';'
@@ -300,14 +300,16 @@ expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Opera
           | '!' expresion	   	                 { $$ = new Operacion($2,$2,Operador.NOT, @1.first_line, @1.first_column); }
           
           | ID                                  { $$ = new AccesoVariable($1, @1.first_line, @1.first_column); }
-          | ENTERO		                        { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }		    
-          | DECIMAL				                { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column); }
+          | ENTERO		                        { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column,true); }		    
+          | DECIMAL				                { $$ = new Primitivo(Number($1), this._$.first_line, this._$.first_column,false); }
           | RTRUE				                { $$ = new Primitivo(true,  this._$.first_line, this._$.first_column); }
           | RFALSE	     	                    { $$ = new Primitivo(false, this._$.first_line, this._$.first_column); }
           | CADENA	                            { $$ = new Primitivo($1, @1.first_line, @1.first_column); }
           | CARACTER                            { $$ = new Primitivo($1, @1.first_line, @1.first_column); }
           | RNULL                               { $$ = new Primitivo(null, @1.first_line, @1.first_column); }
           
+          | ID '[' expresion ']'                { $$ = new AccesoArreglo($1,$3, @1.first_line, @1.first_column); }
+
           | ID '.' ID '(' ')'
           | ID '.' ID '(' lista_parametros')'
           | CADENA '.' ID '(' ')'

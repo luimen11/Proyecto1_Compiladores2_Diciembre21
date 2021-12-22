@@ -1,9 +1,7 @@
 "use strict";
 exports.__esModule = true;
 exports.Declaracion = void 0;
-// print("hola mundo");
 var Declaracion = /** @class */ (function () {
-    // meter listado de print print(a,b)
     function Declaracion(identificadores, tipo, linea, columna, exp) {
         if (exp === void 0) { exp = null; }
         this.identificadores = identificadores;
@@ -18,9 +16,11 @@ var Declaracion = /** @class */ (function () {
     Declaracion.prototype.ejecutar = function (ent, arbol) {
         var _this = this;
         this.identificadores.forEach(function (id) {
-            if (!ent.existe(id)) {
+            if (!ent.existeEnActual(id)) {
                 if (_this.expresion !== null) {
-                    if (_this.tipo === _this.expresion.getTipo(ent, arbol)) {
+                    var condicion1 = _this.tipo;
+                    var condicion2 = _this.expresion.getTipo(ent, arbol);
+                    if (condicion1 === condicion2 || (condicion1 == 1 && condicion2 == 2) || (condicion1 == 2 && condicion2 == 1)) {
                         var valor = _this.expresion.getValorImplicito(ent, arbol);
                         var simbolo = new Simbolo(_this.tipo, id, _this.linea, _this.columna, valor);
                         ent.agregar(id, simbolo);

@@ -18,7 +18,7 @@ var If = /** @class */ (function () {
     If.prototype.ejecutar = function (ent, arbol) {
         //verificar que la exp sea booleana
         if (this.condicion.getValorImplicito(ent, arbol)) {
-            console.log(this.lista_instrucciones_if.length);
+            //console.log(this.lista_instrucciones_if.length);
             var entornoIf_1 = new Entorno(ent);
             this.lista_instrucciones_if.forEach(function (instruccion) {
                 instruccion.ejecutar(entornoIf_1, arbol);
