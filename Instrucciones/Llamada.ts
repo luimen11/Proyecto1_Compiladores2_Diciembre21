@@ -31,9 +31,13 @@ export class Llamada implements Instruccion{
             console.log("no existe la funcion");
         }else {
             arbol.funciones[numeroFuncion].parametros_pasados = this.lista_parametros;
-            arbol.funciones[numeroFuncion].ejecutar(entornoFuncion,arbol);
+            return arbol.funciones[numeroFuncion].ejecutar(entornoFuncion,arbol);
         }           
    
+    }
+
+    getValorImplicito(ent: Entorno, arbol: AST) {
+        return this.ejecutar(ent, arbol);
     }
 
 

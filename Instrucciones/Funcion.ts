@@ -46,23 +46,33 @@ export class Funcion implements Instruccion{
 
                 }
 
-
             }else {
                 console.log("el numero de parametros no coincide con el referenciado")
       
             }
             
-           
+        }
+
+        for(var i=0; i< this.lista_instrucciones.length; i++ ){
+
+            var valor=this.lista_instrucciones[i].ejecutar(entornoFuncion, arbol);    
+
+            if (this.lista_instrucciones[i].constructor.name.toString() == "Return") {
+                return valor;
+            }
+
+            if(valor != null){
+                console.log("viene un return" , valor)
+                return valor;
+            }
 
         }
 
+        
 
+        
+     
 
-
-        this.lista_instrucciones.forEach((instruccion) => {
-            instruccion.ejecutar(entornoFuncion, arbol);    
-        });
-   
     }
 
 

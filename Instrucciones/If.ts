@@ -35,10 +35,22 @@ export class If implements Instruccion{
         if(this.condicion.getValorImplicito(ent,arbol)){
             console.log(this.lista_instrucciones_if.length)
             const entornoIf = new Entorno(ent);
-            this.lista_instrucciones_if.forEach((instruccion) => {
-                instruccion.ejecutar(entornoIf, arbol);
-            })
-            return;
+                        
+            for( var i=0; i<this.lista_instrucciones_if.length;i++){
+                let valor = this.lista_instrucciones_if[i].ejecutar(entornoIf, arbol);
+
+                if (this.lista_instrucciones_if[i].constructor.name.toString() == "Return") {
+                    return valor;
+                }
+
+                if(valor != null){
+                    console.log("viene un return" , valor)
+                    return valor;
+                }
+
+            }
+
+            
 
         } else {
             
@@ -49,9 +61,22 @@ export class If implements Instruccion{
    
             if(this.lista_instrucciones_else.length > 0){
             const entornoElse = new Entorno(ent);
-                this.lista_instrucciones_else.forEach((instruccion:any) => {
-                instruccion.ejecutar(entornoElse, arbol);
-             })
+
+            for( var i=0; i<this.lista_instrucciones_else.length;i++){
+                let valor = this.lista_instrucciones_else[i].ejecutar(entornoElse, arbol);
+
+                if (this.lista_instrucciones_else[i].constructor.name.toString() == "Return") {
+                    return valor;
+                }
+
+                if(valor != null){
+                    console.log("viene un return" , valor)
+                    return valor;
+                }
+
+            }
+            
+             return null;
             }
         }
         return;

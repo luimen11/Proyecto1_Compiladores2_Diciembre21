@@ -21,7 +21,7 @@ export class Return implements Instruccion{
     ejecutar(ent: Entorno, arbol: AST) {
         
         if(this.expresion == null){
-            return null;
+            return "null";
         }else {
             return this.expresion.getValorImplicito(ent,arbol);            
         }

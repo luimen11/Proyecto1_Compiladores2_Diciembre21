@@ -11,7 +11,7 @@ var Return = /** @class */ (function () {
     };
     Return.prototype.ejecutar = function (ent, arbol) {
         if (this.expresion == null) {
-            return null;
+            return "null";
         }
         else {
             return this.expresion.getValorImplicito(ent, arbol);

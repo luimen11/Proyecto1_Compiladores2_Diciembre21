@@ -18,12 +18,18 @@ var If = /** @class */ (function () {
     If.prototype.ejecutar = function (ent, arbol) {
         //verificar que la exp sea booleana
         if (this.condicion.getValorImplicito(ent, arbol)) {
-            //console.log(this.lista_instrucciones_if.length);
-            var entornoIf_1 = new Entorno(ent);
-            this.lista_instrucciones_if.forEach(function (instruccion) {
-                instruccion.ejecutar(entornoIf_1, arbol);
-            });
-            return;
+            console.log(this.lista_instrucciones_if.length);
+            var entornoIf = new Entorno(ent);
+            for (var i = 0; i < this.lista_instrucciones_if.length; i++) {
+                var valor = this.lista_instrucciones_if[i].ejecutar(entornoIf, arbol);
+                if (this.lista_instrucciones_if[i].constructor.name.toString() == "Return") {
+                    return valor;
+                }
+                if (valor != null) {
+                    console.log("viene un return", valor);
+                    return valor;
+                }
+            }
         }
         else {
             if (this.lista_else_if.length > 0) {
@@ -31,10 +37,18 @@ var If = /** @class */ (function () {
                 this.lista_else_if[0].ejecutar(entornoElseIf, arbol);
             }
             if (this.lista_instrucciones_else.length > 0) {
-                var entornoElse_1 = new Entorno(ent);
-                this.lista_instrucciones_else.forEach(function (instruccion) {
-                    instruccion.ejecutar(entornoElse_1, arbol);
-                });
+                var entornoElse = new Entorno(ent);
+                for (var i = 0; i < this.lista_instrucciones_else.length; i++) {
+                    var valor = this.lista_instrucciones_else[i].ejecutar(entornoElse, arbol);
+                    if (this.lista_instrucciones_else[i].constructor.name.toString() == "Return") {
+                        return valor;
+                    }
+                    if (valor != null) {
+                        console.log("viene un return", valor);
+                        return valor;
+                    }
+                }
+                return null;
             }
         }
         return;

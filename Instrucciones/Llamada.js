@@ -19,8 +19,11 @@ var Llamada = /** @class */ (function () {
         }
         else {
             arbol.funciones[numeroFuncion].parametros_pasados = this.lista_parametros;
-            arbol.funciones[numeroFuncion].ejecutar(entornoFuncion, arbol);
+            return arbol.funciones[numeroFuncion].ejecutar(entornoFuncion, arbol);
         }
+    };
+    Llamada.prototype.getValorImplicito = function (ent, arbol) {
+        return this.ejecutar(ent, arbol);
     };
     return Llamada;
 }());

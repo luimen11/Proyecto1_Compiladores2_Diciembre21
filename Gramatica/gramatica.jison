@@ -242,15 +242,12 @@ funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}'                  
                 ;
 
 
-tipo_func_arit       : RPOW
-                     | RSQRT
-                     | RSIN
-                     | RCOS
-                     | RTAN
+func_arit            : RPOW  '(' expresion ',' expresion ')'
+                     | RSQRT '(' expresion ')'
+                     | RSIN  '(' expresion ')'
+                     | RCOS  '(' expresion ')'
+                     | RTAN  '(' expresion ')'
 ;                
-
-func_arit          : tipo_func_arit '(' expresion ')'
-;
 
 func_graficar
     : RGRAFICAR '(' ')' ';' { $$ = new GraficarTS() }
@@ -318,7 +315,7 @@ expresion : '-' expresion %prec UMENOS	         { $$ = new Operacion($2,$2,Opera
 
           | expresion '++'
           | expresion '--'       
-          | llamada 
+          | llamada                              { $$ = $1 }
           | nativas
           | func_arit
           | '(' expresion ')'	          	     { $$ = $2 } 

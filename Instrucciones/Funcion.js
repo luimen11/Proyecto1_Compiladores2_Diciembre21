@@ -22,8 +22,8 @@ var Funcion = /** @class */ (function () {
             console.log(this.parametros_pasados.length);
             if (this.parametros_pasados.length == this.lista_parametros.length) {
                 for (var i = 0; i < this.parametros_pasados.length; i++) {
-                    var valor = this.parametros_pasados[i].getValorImplicito(ent, arbol);
-                    this.lista_parametros[i].valor = valor;
+                    var valor_1 = this.parametros_pasados[i].getValorImplicito(ent, arbol);
+                    this.lista_parametros[i].valor = valor_1;
                     entornoFuncion.agregar(this.lista_parametros[i].indentificador, this.lista_parametros[i]);
                 }
             }
@@ -31,9 +31,16 @@ var Funcion = /** @class */ (function () {
                 console.log("el numero de parametros no coincide con el referenciado");
             }
         }
-        this.lista_instrucciones.forEach(function (instruccion) {
-            instruccion.ejecutar(entornoFuncion, arbol);
-        });
+        for (var i = 0; i < this.lista_instrucciones.length; i++) {
+            var valor = this.lista_instrucciones[i].ejecutar(entornoFuncion, arbol);
+            if (this.lista_instrucciones[i].constructor.name.toString() == "Return") {
+                return valor;
+            }
+            if (valor != null) {
+                console.log("viene un return", valor);
+                return valor;
+            }
+        }
     };
     return Funcion;
 }());
