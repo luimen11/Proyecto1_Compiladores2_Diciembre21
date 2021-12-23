@@ -14,11 +14,10 @@
 Gramatica Implementada en Jison.
 
 #### **Componentes de la gramatica:**
-inicio
-    : instrucciones EOF;
+    inicio : instrucciones EOF;
 
-instrucciones
-    : instrucciones instruccion   
+    instrucciones
+     : instrucciones instruccion   
     | instruccion   ;
 
 instruccion
@@ -167,7 +166,7 @@ instruccion_dentro      : declaracion
                         | expresion '--'';'
                         ;
 
-expresion : '-' expresion %prec UMENOS	        
+    expresion : '-' expresion %prec UMENOS	        
           | expresion '&' expresion		        
           | expresion '^' expresion	            
 
