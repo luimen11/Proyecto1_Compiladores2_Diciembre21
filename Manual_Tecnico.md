@@ -193,3 +193,102 @@ Gramatica Implementada en Jison.
           ;
 
 
+#### **Precedencia de Operadores:**
+
+    %right'?'
+    %left '||' 
+    %left '&&' 
+    %left '<' '<=' '>' '>=' '==' '!='
+    %left '+' '-' '&'
+    %left '*' '/' '%' '^'
+    %left UMENOS
+    %right '!'
+    %right '++' '--'
+
+#### **Palabras reservadas:**    
+    "void"              return 'RVOID';
+    "null"              return 'RNULL';
+    "int"               return 'RINT';
+    "double"            return 'RDOUBLE';
+    "String"            return 'RSTRING';
+    "boolean"           return 'RBOOLEAN';
+    "char"              return 'RCHAR'
+    "true"              return 'RTRUE';
+    "false"             return 'RFALSE';
+    "struct"            return 'RSTRUCT';
+    "print"             return 'RPRINT';
+    "println"           return 'RPRINTLN';
+    "pow"               return 'RPOW';
+    "sin"               return 'RSIN';
+    "cos"               return 'RCOS';
+    "tan"               return 'RTAN';
+    "log10"             return 'RLOG';
+    "sqrt"              return 'RSQRT';
+    "toInt"             return 'RTOINT';
+    "toDouble"          return 'RTODOUBLE';
+    "typeof"            return 'RTYPEOF';
+    "return"            return 'RRETURN';
+    "if"                return 'RIF';
+    "else"              return 'RELSE';
+    "switch"            return 'RSWITCH';
+    "case"              return 'RCASE';
+    "default"           return 'RDEFAULT';
+    "while"             return 'RWHILE';
+    "do"                return 'RDO';
+    "for"               return 'RFOR';
+    "in"                return 'RIN';
+    "push"              return 'RPUSH';
+    "pop"               return 'RPOP';
+    "length"            return 'RLENGTH';
+    "parse"             return 'RPARSE';
+    "break"             return 'RBREAK';
+    "continue"          return 'RCONTINUE';
+    "graficar_ts"       return 'RGRAFICAR';
+
+
+    ":"                 return ':';
+    "."                 return '.';
+    ","                 return ',';
+    ";"                 return ';';
+    "{"                 return '{';
+    "}"                 return '}';
+    "("                 return '(';
+    ")"                 return ')';
+    "["                 return '[';
+    "]"                 return ']';
+
+    "%"                 return '%';
+    "++"                return '++';
+    "--"                return '--';
+    "+"                 return '+';
+    "^"                 return '^';
+
+    "-"                 return '-';
+    "*"                 return '*';
+    "/"                 return '/';
+
+    "<="                return '<=';
+    ">="                return '>=';
+    "=="                return '==';
+    "!="                return '!=';
+    "<"                 return '<';
+    ">"                 return '>';
+
+    "&&"                return '&&';
+    "&"                 return '&';
+    "||"                return '||';
+    "!"                 return '!';
+
+    "="                 return '=';
+    "?"                 return '?';
+
+#### **Expresiones Regulares:**    
+
+    \"[^\"]*\"                 CADENA
+    \'[^\']*\'                CARACTER
+
+
+    [0-9]+("."[0-9]+)\b          DECIMAL
+    [0-9]+\b                     ENTERO
+    "false"|"true"               BOOLEANO
+    ([a-zA-Z])[a-zA-Z0-9_]*      ID 
