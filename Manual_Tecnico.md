@@ -104,67 +104,64 @@ bloque_instrucciones   : '{' instrucciones_dentro '}'
                         | llamada ';'
                        ; 
 
-cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'       
-                ;
-
-bloque_switch   : bloque_switch estructura_case                                    
-                | estructura_case                                                   
-                ;
-
-estructura_case : RCASE expresion ':' instrucciones_dentro          
-                | RDEFAULT ':' instrucciones_dentro                 
-                ;
-
-loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}'   
-                ;
-
-loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  
-                ;
-
-loop_for        : RFOR '(' declarar_asignar ';' expresion ';'  declarar_asignar ')' '{' instrucciones_dentro '}' ;
-
-declarar_asignar: tipo ID '=' expresion
-                | ID '=' expresion
-                | expresion
-                ;
-
-funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}'                         
-                | tipo ID '(' lista_atributos')' '{'instrucciones_dentro '}'         
-                ;
-
-
-func_arit            : RPOW  '(' expresion ',' expresion ')'
-                     | RSQRT '(' expresion ')'
-                     | RSIN  '(' expresion ')'
-                     | RCOS  '(' expresion ')'
-                     | RTAN  '(' expresion ')'
-;                
-
-func_graficar
-    : RGRAFICAR '(' ')' ';' 
-;
-
-instrucciones_dentro : instrucciones_dentro instruccion_dentro          
-                     | instruccion_dentro                               
+    cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'       
                     ;
 
-instruccion_dentro      : declaracion                                       
-                        | asignacion                                         
-                        | impresion                                          
-                        | llamada ';'                                        
-                        | cond_if                                            
-                        | cond_switch                                       
-                        | loop_while                                         
-                        | loop_dowhile                                       
-                        | loop_for
-                        | RRETURN ';'                                        
-                        | RRETURN expresion ';'                              
-                        | func_graficar                                     
-                        | RBREAK ';'                                        
-                        
-                        | expresion '++'';'
-                        | expresion '--'';'
-                        ;
+    bloque_switch   : bloque_switch estructura_case                                    
+                    | estructura_case                                                   
+                    ;
+
+    estructura_case : RCASE expresion ':' instrucciones_dentro          
+                    | RDEFAULT ':' instrucciones_dentro                 
+                    ;
+
+    loop_while      : RWHILE '(' expresion ')' '{' instrucciones_dentro '}'   
+                    ;
+
+    loop_dowhile    : RDO '{' instrucciones_dentro '}' RWHILE '(' expresion ')' ';'  
+                    ;
+
+    loop_for        : RFOR '(' declarar_asignar ';' expresion ';'  declarar_asignar ')' '{' instrucciones_dentro '}' ;
+
+    declarar_asignar: tipo ID '=' expresion
+                   | ID '=' expresion
+                   | expresion
+                ;
+
+    funciones       : tipo ID '(' ')' '{' instrucciones_dentro '}'                         
+                    | tipo ID '(' lista_atributos')' '{'instrucciones_dentro '}'         
+                 ;
+
+
+    func_arit            : RPOW  '(' expresion ',' expresion ')'
+                         | RSQRT '(' expresion ')'
+                         | RSIN  '(' expresion ')'
+                         | RCOS  '(' expresion ')'
+                         | RTAN  '(' expresion ')';                
+
+    func_graficar : RGRAFICAR '(' ')' ';' ;
+
+    instrucciones_dentro : instrucciones_dentro instruccion_dentro          
+                         | instruccion_dentro                               
+                    ;
+
+    instruccion_dentro      : declaracion                                       
+                            | asignacion                                         
+                            | impresion                                          
+                            | llamada ';'                                        
+                            | cond_if                                            
+                            | cond_switch                                       
+                            | loop_while                                         
+                            | loop_dowhile                                       
+                            | loop_for
+                            | RRETURN ';'                                        
+                            | RRETURN expresion ';'                              
+                            | func_graficar                                     
+                            | RBREAK ';'                                        
+
+                            | expresion '++'';'
+                            | expresion '--'';'
+                         ;
 
     expresion : '-' expresion %prec UMENOS	        
           | expresion '&' expresion		        
