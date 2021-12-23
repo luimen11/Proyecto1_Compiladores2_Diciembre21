@@ -16,93 +16,76 @@ Gramatica Implementada en Jison.
 #### **Componentes de la gramatica:**
     inicio : instrucciones EOF;
 
-    instrucciones
-     : instrucciones instruccion   
-    | instruccion   ;
+    instrucciones   : instrucciones instruccion   
+                    | instruccion   ;
 
-instruccion
-    : declaracion                        
-    | asignacion                        
-    | impresion                          
-    | funciones                          
-    | cond_if                            
-    | cond_switch                       
-    | loop_while                         
-    | loop_dowhile                       
-    | func_graficar                      
-;
+    instruccion : declaracion                        
+                | asignacion                        
+                | impresion                          
+                | funciones                          
+                | cond_if                            
+                | cond_switch                       
+                | loop_while                         
+                | loop_dowhile                       
+                | func_graficar   ;
 
-declaracion : tipo ID '=' expresion ';'                 
-            | tipo lista_declaracion ';'                
-            | RSTRUCT ID '{' lista_atributos'}' ';'
-            | tipo '[' ']' ID '=' cuerpo_array ';'      
-;
+    declaracion : tipo ID '=' expresion ';'                 
+                | tipo lista_declaracion ';'                
+                | RSTRUCT ID '{' lista_atributos'}' ';'
+                | tipo '[' ']' ID '=' cuerpo_array ';' ;
 
-lista_atributos : lista_atributos ',' atributo          
-                | atributo                              
-                ;
+    lista_atributos : lista_atributos ',' atributo          
+                    | atributo  ;
 
-atributo : tipo ID   
-         | ID ID                        
-         ;
+    atributo : tipo ID   
+             | ID ID  ;
 
-lista_declaracion : lista_declaracion ',' ID             
-                  | ID                                    
-                ;
+    lista_declaracion : lista_declaracion ',' ID             
+                      | ID   ;
 
-cuerpo_array        : '[' lista_parametros']'           
-                    ;
+    cuerpo_array        : '[' lista_parametros']'       ;
 
-asignacion : ID '=' expresion ';'                            
-           | ID '[' expresion ']' '=' expresion ';'          
-           | ID ID '=' ID '(' lista_parametros ')' ';'
-           ;
+    asignacion : ID '=' expresion ';'                            
+               | ID '[' expresion ']' '=' expresion ';'          
+               | ID ID '=' ID '(' lista_parametros ')' ';'          ;
 
-tipo        : tipo_primitivo        
-;
+    tipo        : tipo_primitivo   ;
 
-tipo_primitivo :    RINT             
-               |    RDOUBLE         
-               |    RSTRING         
-               |    RBOOLEAN       
-               |    RCHAR           
-               |    RVOID          
-;                    
+    tipo_primitivo :    RINT             
+                   |    RDOUBLE         
+                   |    RSTRING         
+                   |    RBOOLEAN       
+                   |    RCHAR           
+                   |    RVOID   ;                    
 
-impresion       : RPRINTLN '(' lista_impresion ')' ';'          
-                | RPRINT '(' lista_impresion ')' ';'            
-;
+    impresion       : RPRINTLN '(' lista_impresion ')' ';'          
+                    | RPRINT '(' lista_impresion ')' ';'  ;
 
-lista_impresion : lista_impresion ',' expresion                
-                | expresion                                   
-;
+    lista_impresion : lista_impresion ',' expresion                
+                    | expresion   ;
 
-llamada         : ID '(' lista_parametros ')'                   
-                | ID '(' ')'                                    
-;
+    llamada         : ID '(' lista_parametros ')'                   
+                    | ID '(' ')'  ;
 
-lista_parametros : lista_parametros ',' expresion              
-                 | expresion                                    
-;                 
+    lista_parametros : lista_parametros ',' expresion              
+                   | expresion     ;                 
 
-nativas          : tipo '.' RPARSE '(' expresion ')'
-                 | RTOINT '(' expresion ')'
-                 | RTODOUBLE '(' expresion ')'
-                 | RSTRING '(' expresion ')'
-                 | RTYPEOF '(' expresion ')'                 
-;                 
+    nativas          : tipo '.' RPARSE '(' expresion ')'
+                     | RTOINT '(' expresion ')'
+                     | RTODOUBLE '(' expresion ')'
+                     | RSTRING '(' expresion ')'
+                     | RTYPEOF '(' expresion ')'      ;                 
                  
-cond_if         : RIF '(' expresion ')' bloque_instrucciones                                              
-                | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                  
-                | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     
-;
+    cond_if         : RIF '(' expresion ')' bloque_instrucciones                                              
+                    | RIF '(' expresion ')' bloque_instrucciones RELSE cond_if                  
+                    | RIF '(' expresion ')' bloque_instrucciones RELSE bloque_instrucciones     ;
 
-bloque_instrucciones   : '{' instrucciones_dentro '}'                                         
-                        | declaracion
-                        | asignacion
-                        | impresion
-                        | llamada ';'
-                       ; 
+    bloque_instrucciones   : '{' instrucciones_dentro '}'                                         
+                            | declaracion
+                            | asignacion
+                            | impresion
+                            | llamada ';'
+                           ; 
 
     cond_switch     : RSWITCH '(' expresion ')' '{' bloque_switch '}'       
                     ;
